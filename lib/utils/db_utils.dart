@@ -1,16 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:igeo/models/point.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
-
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../models/project.dart';
+
 class DbUtils {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   static Future<Database> database() async {
     final dbPath = await getDatabasesPath();
     return openDatabase(
@@ -83,13 +87,13 @@ class DbUtils {
   }
 
   static Future<List<Map<String, dynamic>>> queryImages(
-      int pointId, int projectId) async {
+      int pointId, String projectId) async {
     final db = await DbUtils.database();
     return db.rawQuery('SELECT * FROM points WHERE id=? AND project_id=?',
         [pointId, projectId]);
   }
 
-  static Future<void> favoritePoint(int pointId, int projectId) async {
+  static Future<void> favoritePoint(int pointId, String projectId) async {
     final db = await database();
 
     final results = await db.query(
@@ -259,7 +263,7 @@ class DbUtils {
   //       'SELECT p.long, p.lat, p.id, p.name, p.description, p.date, p.time, s.project_name FROM points AS p JOIN projects AS s on p.project_id = s.id');
   // }
 
-  static Future<void> deleteProject(int projectId) async {
+  static Future<void> deleteProject(String projectId) async {
     final db = await database();
     await db.delete(
       'projects',
@@ -268,7 +272,7 @@ class DbUtils {
     );
   }
 
-  static Future<void> deleteProjectPoints(int projectId) async {
+  static Future<void> deleteProjectPoints(String projectId) async {
     final db = await database();
     await db.delete(
       'points',

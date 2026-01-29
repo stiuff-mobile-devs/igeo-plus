@@ -11,7 +11,7 @@ class PointItem extends StatefulWidget {
   //final Map<String, dynamic> userData;
   // final Function(int, String, int) onDeletePoint;
   final Function(int) onDeletePoint;
-  final void Function(int, int) onToggleFavorite;
+  final void Function(int, String) onToggleFavorite;
   final bool isFavorite;
 
   const PointItem(

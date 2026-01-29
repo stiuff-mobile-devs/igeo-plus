@@ -1,16 +1,28 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Project {
-  final int id;
-  final String name;
+  String id;
+  String name;
+  DateTime createdAt;
 
   Project({
-    required this.id,
+    this.id = "",
     required this.name,
+    required this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'name': name,
+      'created_at': createdAt,
     };
+  }
+
+  factory Project.fromMap(String id, Map<String, dynamic> map) {
+    return Project(
+      id: id,
+      name: map['name'],
+      createdAt: (map["created_at"] as Timestamp).toDate(),
+    );
   }
 }

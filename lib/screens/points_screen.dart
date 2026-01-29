@@ -47,7 +47,7 @@ class _PointsScreenState extends State<PointsScreen> {
       Point newPoint = Point(
         id: int.tryParse(point["id"]?.toString() ?? '') ?? 0,
         user_id: int.tryParse(point["user_id"]?.toString() ?? '') ?? 0,
-        project_id: int.tryParse(point["project_id"]?.toString() ?? '') ?? 0,
+        project_id: point["project_id"]?.toString() ?? '',
         name: point["name"]?.toString() ?? 'Unnamed Point',
         lat: double.tryParse(point["lat"]?.toString() ?? '') ?? 0.0,
         long: double.tryParse(point["long"]?.toString() ?? '') ?? 0.0,
@@ -71,7 +71,7 @@ class _PointsScreenState extends State<PointsScreen> {
   }
 
   Future postPoint(
-    int projectId,
+    String projectId,
     String name,
     double? latitude,
     double? longitude,
@@ -100,7 +100,7 @@ class _PointsScreenState extends State<PointsScreen> {
     setState(() {});
   }
 
-  void changeFavorite(int pointId, int projectId) {
+  void changeFavorite(int pointId, String projectId) {
     pointList.togglePointFavorite(pointId, projectId);
   }
 

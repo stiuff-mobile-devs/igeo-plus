@@ -10,7 +10,7 @@ class Point with ChangeNotifier {
   String? time;
   String? description;
   int? user_id;
-  int? project_id;
+  String? project_id;
   bool isFavorite;
   List<String> image = [];
   List<File>? pickedImages = [];
