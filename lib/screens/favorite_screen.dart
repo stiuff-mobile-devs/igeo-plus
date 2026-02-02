@@ -43,7 +43,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
       for (final point in pointData) {
         final newPoint = Point(
-          id: int.tryParse(point["id"]?.toString() ?? '') ?? 0,
+          //id: int.tryParse(point["id"]?.toString() ?? '') ?? 0,
           user_id: int.tryParse(point["user_id"]?.toString() ?? '') ?? 0,
           project_id: point["project_id"]?.toString() ?? '',
           name: point["name"]?.toString() ?? 'Unnamed Point',

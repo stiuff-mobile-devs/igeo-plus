@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'dart:io';
 
@@ -9,6 +12,7 @@ import '../models/point.dart';
 import '../models/point_list.dart';
 import '../models/project.dart';
 
+import '../utils/fb_utils.dart';
 import '../utils/routes.dart';
 import '../utils/db_utils.dart';
 
@@ -28,6 +32,7 @@ class PointsScreen extends StatefulWidget {
 
 class _PointsScreenState extends State<PointsScreen> {
   PointList pointList = PointList();
+  final FirestoreUtils firestore = FirestoreUtils();
   dynamic pointData;
   Point? newPoint;
 
@@ -39,33 +44,36 @@ class _PointsScreenState extends State<PointsScreen> {
   getPoints() async {
     pointList.clear();
     setState(() => pointList = PointList());
+    String projectId = widget.project.id;
+
+    pointList.points = await firestore.getPointsByProject(projectId);
 
     pointData = await DbUtils.getData("points");
     if (pointData.isEmpty) return;
 
-    pointData.forEach((point) {
-      Point newPoint = Point(
-        id: int.tryParse(point["id"]?.toString() ?? '') ?? 0,
-        user_id: int.tryParse(point["user_id"]?.toString() ?? '') ?? 0,
-        project_id: point["project_id"]?.toString() ?? '',
-        name: point["name"]?.toString() ?? 'Unnamed Point',
-        lat: double.tryParse(point["lat"]?.toString() ?? '') ?? 0.0,
-        long: double.tryParse(point["long"]?.toString() ?? '') ?? 0.0,
-        date: point["date"]?.toString() ?? 'No date',
-        time: point["time"]?.toString() ?? 'No time',
-        description: point["description"]?.toString() ?? 'No description',
-        isFavorite: toBoolean(point["is_favorite"]?.toString() ?? 'false'),
-      );
-
-      for (int i = 1; i <= 4; i++) {
-        final image = point["image$i"]?.toString();
-        if (image != null && image.isNotEmpty) {
-          newPoint.addUrlToImageList(image);
-        }
-      }
-
-      pointList.addPoint(newPoint);
-    });
+    // pointData.forEach((point) {
+    //   Point newPoint = Point(
+    //     id: int.tryParse(point["id"]?.toString() ?? '') ?? 0,
+    //     user_id: int.tryParse(point["user_id"]?.toString() ?? '') ?? 0,
+    //     project_id: point["project_id"]?.toString() ?? '',
+    //     name: point["name"]?.toString() ?? 'Unnamed Point',
+    //     lat: double.tryParse(point["lat"]?.toString() ?? '') ?? 0.0,
+    //     long: double.tryParse(point["long"]?.toString() ?? '') ?? 0.0,
+    //     date: point["date"]?.toString() ?? 'No date',
+    //     time: point["time"]?.toString() ?? 'No time',
+    //     description: point["description"]?.toString() ?? 'No description',
+    //     isFavorite: toBoolean(point["is_favorite"]?.toString() ?? 'false'),
+    //   );
+    //
+    //   for (int i = 1; i <= 4; i++) {
+    //     final image = point["image$i"]?.toString();
+    //     if (image != null && image.isNotEmpty) {
+    //       newPoint.addUrlToImageList(image);
+    //     }
+    //   }
+    //
+    //   pointList.addPoint(newPoint);
+    // });
 
     return pointData;
   }
@@ -91,16 +99,67 @@ class _PointsScreenState extends State<PointsScreen> {
       'is_favorite': 'false',
     };
 
-    for (int i = 0; i < 4; i++) {
-      pointData['image${i + 1}'] = (i < photos.length) ? photos[i].path : '';
+    List<String> encodedImages = [];
+
+    for (int i = 0; i < photos.length && i < 4; i++) {
+      final encoded = await compressAndEncodeImage(photos[i].path);
+      if (encoded != null) {
+        encodedImages.add(encoded);
+      }
     }
 
-    await DbUtils.insert('points', pointData);
+    pointData['images'] = encodedImages;
+
+    // for (int i = 0; i < 4; i++) {
+    //   pointData['image${i + 1}'] = (i < photos.length) ? photos[i].path : '';
+    // }
+
+    await firestore.createPoint(pointData);
+    //await DbUtils.insert('points', pointData);
     await getPoints();
     setState(() {});
   }
 
-  void changeFavorite(int pointId, String projectId) {
+  Future<String?> compressAndEncodeImage(String imagePath) async {
+    try {
+      final File imageFile = File(imagePath);
+
+      if (!await imageFile.exists()) {
+        return null;
+      }
+
+      final compressedBytes = await FlutterImageCompress.compressWithFile(
+        imagePath,
+        quality: 40,
+        minWidth: 400,
+        minHeight: 600,
+      );
+
+      if (compressedBytes == null) {
+        return null;
+      }
+
+      final base64String = base64Encode(compressedBytes);
+
+      return base64String;
+    } catch (e) {
+      print('Erro ao comprimir e codificar imagem: $e');
+      return null;
+    }
+  }
+
+  // Future<File> base64ToFile(String base64String, String fileName) async {
+  //   // final bytes = base64Decode(base64String);
+  //   //
+  //   // //final dir = await getTemporaryDirectory();
+  //   // //final file = File('${dir.path}/$fileName');
+  //   //
+  //   // await file.writeAsBytes(bytes);
+  //   //
+  //   // return file;
+  // }
+
+  void changeFavorite(String pointId, String projectId) {
     pointList.togglePointFavorite(pointId, projectId);
   }
 
@@ -109,7 +168,7 @@ class _PointsScreenState extends State<PointsScreen> {
   }
 
   // deletePointDef(int userId, String token, int pointId) async {
-  deletePointDef(int pointId) async {
+  deletePointDef(String pointId) async {
     Widget alert = AlertDialog(
       title: const Text("Delete point?",
           style: TextStyle(

@@ -93,7 +93,7 @@ class DbUtils {
         [pointId, projectId]);
   }
 
-  static Future<void> favoritePoint(int pointId, String projectId) async {
+  static Future<void> favoritePoint(String pointId, String projectId) async {
     final db = await database();
 
     final results = await db.query(
@@ -281,7 +281,7 @@ class DbUtils {
     );
   }
 
-  static Future<void> deletePoint(int pointId) async {
+  static Future<void> deletePoint(String pointId) async {
     final db = await database();
     await db.delete(
       'points',

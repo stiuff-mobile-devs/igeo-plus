@@ -1,11 +1,45 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:path/path.dart' as path; // Adicione esta importação
 
 class ImageScreen extends StatelessWidget {
-  final String imageUrl;
-  const ImageScreen({required this.imageUrl, super.key});
+  final String base64Image;
+
+  const ImageScreen({
+    required this.base64Image,
+    super.key,
+  });
+
+  Uint8List get _bytes => base64Decode(base64Image);
+
+  Future<void> _saveImage(BuildContext context) async {
+    final PermissionState status =
+    await PhotoManager.requestPermissionExtend();
+
+    if (!status.isAuth) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You should have permission')),
+      );
+      return;
+    }
+
+    final AssetEntity? entity =
+    await PhotoManager.editor.saveImage(
+      _bytes,
+      title: 'image_${DateTime.now().millisecondsSinceEpoch}', filename: '',
+    );
+
+    if (entity != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Saved in gallery'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,20 +47,12 @@ class ImageScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.pop(context); // Pops the current screen
-          },
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Column(
           children: [
-            Icon(
-              Icons.photo_album,
-              color: Colors.white,
-            ),
+            Icon(Icons.photo_album, color: Colors.white),
             Text(
               "Photo",
               style: TextStyle(color: Colors.white, fontSize: 14),
@@ -35,75 +61,23 @@ class ImageScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () async {
-              final PermissionState status =
-                  await PhotoManager.requestPermissionExtend();
-              if (!status.isAuth) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('You should have permission')),
-                );
-                return;
-              }
-
-              final AssetEntity? entity =
-                  await PhotoManager.editor.saveImageWithPath(
-                imageUrl,
-                title: path.basename(
-                    imageUrl), // Usando a função basename do pacote path
-              );
-
-              if (entity != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Saved in gallery'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              }
-            },
-            icon: const Icon(
-              Icons.download,
-              color: Colors.white,
-            ),
+            onPressed: () => _saveImage(context),
+            icon: const Icon(Icons.download, color: Colors.white),
           ),
         ],
       ),
       body: Center(
         child: InteractiveViewer(
           maxScale: 4,
-          child: Image.file(
-            File(imageUrl),
+          child: Image.memory(
+            _bytes,
             width: double.infinity,
+            fit: BoxFit.contain,
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final PermissionState status =
-              await PhotoManager.requestPermissionExtend();
-          if (!status.isAuth) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('You should have permission')),
-            );
-            return;
-          }
-
-          final AssetEntity? entity =
-              await PhotoManager.editor.saveImageWithPath(
-            imageUrl,
-            title: path
-                .basename(imageUrl), // Usando a função basename do pacote path
-          );
-
-          if (entity != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Saved in gallery'),
-                duration: Duration(seconds: 2),
-              ),
-            );
-          }
-        },
+        onPressed: () => _saveImage(context),
         backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.download),
       ),
