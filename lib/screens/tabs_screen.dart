@@ -5,6 +5,7 @@ import '../utils/db_utils.dart';
 import '../screens/favorite_screen.dart';
 import '../screens/projects_screen.dart';
 import '../screens/start_screen.dart';
+import '../screens/about_screen.dart';
 
 import 'package:open_file/open_file.dart';
 import 'package:share_plus/share_plus.dart';
@@ -110,7 +111,8 @@ class _TabsScreenState extends State<TabsScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => StartScreen()), // Pushes StartScreen()
+                builder: (context) => StartScreen(), // Pushes StartScreen()
+              ),
             );
           },
         ),
@@ -132,17 +134,35 @@ class _TabsScreenState extends State<TabsScreen> {
                   showExportResult(context, path);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("No data to export")));
+                    const SnackBar(content: Text("No data to export")),
+                  );
                 }
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Export failed: ${e.toString()}")));
+                  SnackBar(content: Text("Export failed: ${e.toString()}")),
+                );
               }
             },
             icon: const Icon(
               Icons.download,
               color: Colors.white,
             ),
+          ),
+
+          // Botão About
+          IconButton(
+            icon: const Icon(
+              Icons.info_outline,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AboutScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -162,7 +182,9 @@ class _TabsScreenState extends State<TabsScreen> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.star_border,
-              color: _selectedScreenIndex != 0 ? Colors.amber : Colors.blueGrey,
+              color: _selectedScreenIndex != 0
+                  ? Colors.amber
+                  : Colors.blueGrey,
             ),
             label: 'Favorite points',
           ),
