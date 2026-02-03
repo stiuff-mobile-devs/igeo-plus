@@ -12,3 +12,8 @@
 
 - **Flutter** for cross-platform development.  
 - **SQLite** for local data storage. 
+
+## Tela About ℹ️
+
+- **Informações do aplicativo**: Exibe informações gerais sobre o iGeo, incluindo seu objetivo e contexto de uso.  
+- **Acesso rápido**: Disponível por meio do ícone de informações na AppBar superior.  
