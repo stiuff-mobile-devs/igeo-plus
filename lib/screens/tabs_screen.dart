@@ -21,7 +21,7 @@ class TabsScreen extends StatefulWidget {
 int _selectedScreenIndex = 0;
 
 class _TabsScreenState extends State<TabsScreen> {
-  late String packageVersion;
+  String packageVersion = "";
 
   @override
   void initState() {

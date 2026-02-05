@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:343376983772:android:dfc40850a6b6c8c88ae619",
+        "mobilesdk_app_id": "1:343376983772:android:e1d74a3bc24d2b828ae619",
         "android_client_info": {
-          "package_name": "com.example.igeo"
+          "package_name": "br.uff.igeoplus"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "343376983772-mbtooh7n0aia89kucp5p7dno61hgjp2c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.uff.igeoplus",
+            "certificate_hash": "6b8f790b5bea471646bf76b9b9ce71eb1f577743"
+          }
+        },
+        {
+          "client_id": "343376983772-totjsi7t8ktnkbjg5mvfrqpcj57i0buo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBmWfA1OIolnpYCTgSsb3o9sm83U55YG7g"
@@ -20,7 +33,55 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "343376983772-totjsi7t8ktnkbjg5mvfrqpcj57i0buo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "343376983772-aijbgj0ti56pi5iqknf7r2nrj5416j4q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.uff.igeo-plus"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:343376983772:android:0d360fb7909927938ae619",
+        "android_client_info": {
+          "package_name": "br.uff.igeoplusplus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "343376983772-totjsi7t8ktnkbjg5mvfrqpcj57i0buo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmWfA1OIolnpYCTgSsb3o9sm83U55YG7g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "343376983772-totjsi7t8ktnkbjg5mvfrqpcj57i0buo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "343376983772-aijbgj0ti56pi5iqknf7r2nrj5416j4q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.uff.igeo-plus"
+              }
+            }
+          ]
         }
       }
     }

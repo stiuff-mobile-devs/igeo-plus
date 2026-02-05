@@ -57,7 +57,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBmWfA1OIolnpYCTgSsb3o9sm83U55YG7g',
-    appId: '1:343376983772:android:dfc40850a6b6c8c88ae619',
+    appId: '1:343376983772:android:0d360fb7909927938ae619',
     messagingSenderId: '343376983772',
     projectId: 'igeo-90933',
     storageBucket: 'igeo-90933.firebasestorage.app',
@@ -65,10 +65,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAIPaRTQtFDM3qSSsAl_g84J6b79kXXFkE',
-    appId: '1:343376983772:ios:19f9e39fb774e5a18ae619',
+    appId: '1:343376983772:ios:1516352eb860856d8ae619',
     messagingSenderId: '343376983772',
     projectId: 'igeo-90933',
     storageBucket: 'igeo-90933.firebasestorage.app',
-    iosBundleId: 'com.example.igeo',
+    androidClientId: '343376983772-c0pjhqcqddnjbbogjsdb4o869qcplf35.apps.googleusercontent.com',
+    iosClientId: '343376983772-aijbgj0ti56pi5iqknf7r2nrj5416j4q.apps.googleusercontent.com',
+    iosBundleId: 'br.uff.igeo-plus',
   );
+
 }
