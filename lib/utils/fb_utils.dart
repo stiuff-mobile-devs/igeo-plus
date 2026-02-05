@@ -1,0 +1,77 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import '../models/point.dart';
+import '../models/project.dart';
+
+class FirestoreUtils {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<Project?> createProject(Project project) async {
+    try {
+    final docRef = await _firestore.collection("projects").add(project.toMap());
+    project.id = docRef.id;
+    return project;
+    } catch (e) {
+      debugPrint("Error on create project: $e");
+      return null;
+    }
+  }
+
+  Future<void> createPoint(Map<String, dynamic> pointData) async {
+    try {
+      await _firestore
+          .collection('projects')
+          .doc(pointData['project_id'])
+          .collection('points')
+          .add(pointData);
+    } catch (e) {
+      debugPrint("Error on create point: $e");
+    }
+  }
+
+  Future<List<Project>> getAllProjects() async {
+    try {
+      List<Project> projects = [];
+      final docs = await _firestore.collection("projects").get();
+      projects = docs.docs.map((e) => Project.fromMap(e.id, e.data())).toList();
+      return projects;
+    } catch (e) {
+      debugPrint("Error on list all projects: $e");
+      return [];
+    }
+  }
+
+  Future<List<Point>> getPointsByProject(String projectId) async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('projects')
+          .doc(projectId)
+          .collection('points')
+          .get();
+
+      return snapshot.docs
+          .map((doc) => Point.fromMap(doc.id, doc.data()))
+          .toList();
+    } catch (e) {
+      debugPrint("Error on get all points from project: $e");
+      return [];
+    }
+  }
+
+  Future<Point?> getPoint(String projectId, String pointId) async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('projects')
+          .doc(projectId)
+          .collection('points')
+          .doc(pointId)
+          .get();
+
+      if (!doc.exists) return null;
+      return Point.fromMap(doc.id, doc.data()!);
+    } catch (e) {
+      debugPrint("Error on get point: $e");
+      return null;
+    }
+  }
+}

@@ -10,7 +10,7 @@ class PointList with ChangeNotifier {
 
   List<Point> get getPoints => points;
 
-  List<Point> getPointsForProject(int projectId) {
+  List<Point> getPointsForProject(String projectId) {
     return points.where((point) => point.project_id == projectId).toList();
   }
 
@@ -22,18 +22,18 @@ class PointList with ChangeNotifier {
     notifyListeners();
   }
 
-  void removePoint(int id) {
+  void removePoint(String id) {
     points.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 
-  Point getPoint(int pointId, int projectId) {
+  Point getPoint(String pointId, String projectId) {
     return points
         .where((point) => point.id == pointId && point.project_id == projectId)
         .first;
   }
 
-  void togglePointFavorite(int pointId, int projectId) {
+  void togglePointFavorite(String pointId, String projectId) {
     if (getPoint(pointId, projectId).isFavorite == false) {
       getPoint(pointId, projectId).isFavorite = true;
       DbUtils.favoritePoint(pointId, projectId);

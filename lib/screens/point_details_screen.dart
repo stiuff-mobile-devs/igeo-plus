@@ -4,14 +4,15 @@ import 'package:latlong2/latlong.dart';
 
 import '../models/point.dart';
 import '../models/project.dart';
-import '../utils/db_utils.dart';
 import '../components/image_item.dart';
+import '../utils/fb_utils.dart';
 
 class PointDetailScreen extends StatelessWidget {
   const PointDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final FirestoreUtils firestore = FirestoreUtils();
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
     final point = arguments["point"] as Point;
@@ -19,16 +20,18 @@ class PointDetailScreen extends StatelessWidget {
     List<String> images = [];
 
     Future<void> loadData() async {
-      final dataList = await DbUtils.queryImages(point.id!, point.project_id!);
-
-      for (int i = 1; i <= 4; i++) {
-        final imageKey = 'image$i';
-        if (dataList.isNotEmpty &&
-            dataList[0][imageKey] != null &&
-            dataList[0][imageKey].toString().isNotEmpty) {
-          images.add(dataList[0][imageKey].toString());
-        }
-      }
+      final pointFB = await firestore.getPoint(point.project_id!, point.id!);
+      images = pointFB?.image ?? [];
+      // final dataList = await DbUtils.queryImages(point.id!, point.project_id!);
+      //
+      // for (int i = 1; i <= 4; i++) {
+      //   final imageKey = 'image$i';
+      //   if (dataList.isNotEmpty &&
+      //       dataList[0][imageKey] != null &&
+      //       dataList[0][imageKey].toString().isNotEmpty) {
+      //     images.add(dataList[0][imageKey].toString());
+      //   }
+      // }
     }
 
     return Scaffold(
@@ -78,17 +81,17 @@ class PointDetailScreen extends StatelessWidget {
         //   ),
         // ],
         actions: [
-          IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white),
-            onPressed: () => Navigator.pushNamed(
-              context,
-              '/edit-point',
-              arguments: {
-                'point': point,
-                'project': project,
-              },
-            ),
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.edit, color: Colors.white),
+          //   onPressed: () => Navigator.pushNamed(
+          //     context,
+          //     '/edit-point',
+          //     arguments: {
+          //       'point': point,
+          //       'project': project,
+          //     },
+          //   ),
+          // ),
         ],
       ),
       body: FutureBuilder(
@@ -273,7 +276,7 @@ class PointDetailScreen extends StatelessWidget {
                                           itemBuilder:
                                               (BuildContext context, index) =>
                                                   ImageItem(
-                                                      imageUrl: images[index]),
+                                                      base64Image: images[index]),
                                         ),
                                       ),
                               ],

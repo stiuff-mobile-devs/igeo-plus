@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'dart:io';
 
 class Point with ChangeNotifier {
-  int? id;
+  String? id;
   String? name;
   double? lat;
   double? long;
@@ -10,9 +10,9 @@ class Point with ChangeNotifier {
   String? time;
   String? description;
   int? user_id;
-  int? project_id;
+  String? project_id;
   bool isFavorite;
-  List<String> image = [];
+  List<String>? image;
   List<File>? pickedImages = [];
 
   Point({
@@ -26,6 +26,7 @@ class Point with ChangeNotifier {
     this.user_id,
     this.project_id,
     this.isFavorite = false,
+    this.image,
     this.pickedImages = const [],
   });
 
@@ -35,7 +36,7 @@ class Point with ChangeNotifier {
   }
 
   void addUrlToImageList(String url) {
-    image.add(url);
+    image?.add(url);
   }
 
   void changeCoordinates(double lat, double long) {
@@ -55,5 +56,23 @@ class Point with ChangeNotifier {
       'long': long,
       'description': description,
     };
+  }
+
+  factory Point.fromMap(String id, Map<String, dynamic> map) {
+    return Point(
+      id: id,
+      user_id: int.tryParse(map["user_id"]?.toString() ?? '') ?? 0,
+      project_id: map["project_id"]?.toString() ?? '',
+      name: map["name"]?.toString() ?? 'Unnamed Point',
+      lat: double.tryParse(map["lat"]?.toString() ?? '') ?? 0.0,
+      long: double.tryParse(map["long"]?.toString() ?? '') ?? 0.0,
+      date: map["date"]?.toString() ?? 'No date',
+      time: map["time"]?.toString() ?? 'No time',
+      description: map["description"]?.toString() ?? 'No description',
+      image: map['images'] != null
+          ? List<String>.from(map['images'])
+          : <String>[],
+      isFavorite: /*toBoolean(point["is_favorite"]?.toString() ??*/ false,
+    );
   }
 }

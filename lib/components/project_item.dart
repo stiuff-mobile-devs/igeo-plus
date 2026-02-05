@@ -9,7 +9,7 @@ import '../models/project.dart';
 class ProjectItem extends StatelessWidget {
   final Project project;
 
-  final Function(int) onDeleteProject;
+  final Function(String) onDeleteProject;
 
   const ProjectItem(this.project, this.onDeleteProject, {super.key});
 

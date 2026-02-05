@@ -28,8 +28,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     setState(() {
       projects = projectData
           .map<Project>((project) => Project(
-                id: int.tryParse(project["id"]?.toString() ?? '') ?? 0,
+                id: project["id"]?.toString() ?? '',
                 name: project["project_name"]?.toString() ?? 'Unnamed Project',
+                createdAt: DateTime.now()
               ))
           .toList();
     });
@@ -42,9 +43,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
       for (final point in pointData) {
         final newPoint = Point(
-          id: int.tryParse(point["id"]?.toString() ?? '') ?? 0,
+          //id: int.tryParse(point["id"]?.toString() ?? '') ?? 0,
           user_id: int.tryParse(point["user_id"]?.toString() ?? '') ?? 0,
-          project_id: int.tryParse(point["project_id"]?.toString() ?? '') ?? 0,
+          project_id: point["project_id"]?.toString() ?? '',
           name: point["name"]?.toString() ?? 'Unnamed Point',
           lat: double.tryParse(point["lat"]?.toString() ?? '') ?? 0.0,
           long: double.tryParse(point["long"]?.toString() ?? '') ?? 0.0,
