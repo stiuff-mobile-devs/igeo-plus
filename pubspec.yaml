@@ -43,6 +43,7 @@ dependencies:
   path_provider: ^2.1.5
   file_picker: ^8.0.7
   geolocator: ^13.0.2
+  package_info_plus: ^8.0.0
   google_maps_flutter: ^2.10.0
   image_picker: ^1.1.2
   image: ^4.3.0

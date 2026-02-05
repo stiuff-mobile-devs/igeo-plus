@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../utils/db_utils.dart';
 import '../screens/favorite_screen.dart';
 import '../screens/projects_screen.dart';
@@ -20,6 +21,22 @@ class TabsScreen extends StatefulWidget {
 int _selectedScreenIndex = 0;
 
 class _TabsScreenState extends State<TabsScreen> {
+  late String packageVersion;
+
+  @override
+  void initState() {
+    super.initState();
+    _getPackageVersion();
+    debugPrint('version$packageVersion');
+  }
+
+  _getPackageVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      packageVersion = packageInfo.version;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // final Map<String, dynamic> userData =
@@ -159,7 +176,7 @@ class _TabsScreenState extends State<TabsScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const AboutScreen(),
+                  builder: (context) => AboutScreen(packageVersion: packageVersion),
                 ),
               );
             },

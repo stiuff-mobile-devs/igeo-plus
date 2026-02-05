@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class AboutScreen extends StatelessWidget {
-  const AboutScreen({Key? key}) : super(key: key);
+  final String packageVersion;
+  const AboutScreen({
+    super.key,
+    required this.packageVersion,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +53,9 @@ class AboutScreen extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            const Text(
-              'Versão 1.0.0',
-              style: TextStyle(
+            Text(
+              packageVersion,
+              style: const TextStyle(
                 fontWeight: FontWeight.w300,
                 color: Colors.black54,
               ),
