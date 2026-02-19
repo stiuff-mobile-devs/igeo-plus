@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/igeo_appbar.dart';
 import '../components/text.dart';
+import '../utils/auth_utils.dart';
 import '../utils/db_utils.dart';
 import '../utils/routes.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -14,6 +15,7 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
+  final AuthUtils auth = AuthUtils();
   bool _isLoading = true;
   bool accept = false;
 
@@ -150,7 +152,11 @@ class _StartScreenState extends State<StartScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       await submitForm();
+                      if (auth.getFirebaseAuthUser() == null) {
+                        Navigator.pushReplacementNamed(context, AppRoutes.LOGIN);
+                      } else {
                       Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).primaryColor,

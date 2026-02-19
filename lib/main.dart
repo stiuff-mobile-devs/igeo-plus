@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:igeo/screens/login_screen.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:igeo/screens/edit_point_screen.dart';
@@ -60,6 +61,7 @@ class MyApp extends StatelessWidget {
         routes: {
           AppRoutes.HOME2: (ctx) => TabsScreen(),
           AppRoutes.NEW_POINT: (ctx) => NewPointFormScreen(),
+          AppRoutes.LOGIN: (ctx) => const LoginScreen(),
           AppRoutes.POINT_DETAILS: (ctx) => PointDetailScreen(),
           '/edit-point': (context) => const EditPointScreen(),
         },
