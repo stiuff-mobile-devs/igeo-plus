@@ -38,21 +38,8 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 16),
-
-            const Text(
-              'Aplicativo de georreferenciamento para visualização e organização de pontos e projetos geográficos.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-              ),
-            ),
-
-            const SizedBox(height: 28),
-
+            const SizedBox(height: 44),
             const Divider(indent: 60, endIndent: 60),
-
             const SizedBox(height: 12),
 
             SignInButton(

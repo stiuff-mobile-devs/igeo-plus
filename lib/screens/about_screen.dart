@@ -11,8 +11,8 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sobre o iGeo'),
-        backgroundColor: Theme.of(context).primaryColor,
+        title: const Text('Sobre o iGeo', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF004D40),
         centerTitle: true,
       ),
       body: Padding(
@@ -23,7 +23,7 @@ class AboutScreen extends StatelessWidget {
             Icon(
               Icons.map_outlined,
               size: 90,
-              color: Theme.of(context).primaryColor,
+              color: const Color(0xFF004D40),
             ),
 
             const SizedBox(height: 32),

@@ -2,12 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/point.dart';
 import '../models/project.dart';
+import 'auth_utils.dart';
 
 class FirestoreUtils {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final AuthUtils auth = AuthUtils();
 
   Future<Project?> createProject(Project project) async {
     try {
+    final user = auth.getFirebaseAuthUser();
+    project.createdBy = user?.id;
     final docRef = await _firestore.collection("projects").add(project.toMap());
     project.id = docRef.id;
     return project;
@@ -32,7 +36,11 @@ class FirestoreUtils {
   Future<List<Project>> getAllProjects() async {
     try {
       List<Project> projects = [];
-      final docs = await _firestore.collection("projects").get();
+      final user = auth.getFirebaseAuthUser();
+      final docs = await _firestore
+          .collection("projects")
+          .where("created_by", isEqualTo: user?.id)
+          .get();
       projects = docs.docs.map((e) => Project.fromMap(e.id, e.data())).toList();
       return projects;
     } catch (e) {

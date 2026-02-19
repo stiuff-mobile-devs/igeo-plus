@@ -4,17 +4,20 @@ class Project {
   String id;
   String name;
   DateTime createdAt;
+  String? createdBy;
 
   Project({
     this.id = "",
     required this.name,
     required this.createdAt,
+    this.createdBy
   });
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
       'created_at': createdAt,
+      'created_by': createdBy
     };
   }
 
@@ -23,6 +26,7 @@ class Project {
       id: id,
       name: map['name'],
       createdAt: (map["created_at"] as Timestamp).toDate(),
+      createdBy: map["created_by"]
     );
   }
 }
