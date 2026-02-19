@@ -13,8 +13,8 @@ class LoginScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Entrar'),
-        backgroundColor: Theme.of(context).primaryColor,
+        title: const Text('Entrar', style: TextStyle(color: Colors.white),),
+        backgroundColor: const Color(0xFF004D40),
         centerTitle: true,
       ),
       body: Padding(
@@ -22,10 +22,10 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.map_outlined,
               size: 90,
-              color: Theme.of(context).primaryColor,
+              color: Color(0xFF004D40),
             ),
 
             const SizedBox(height: 32),

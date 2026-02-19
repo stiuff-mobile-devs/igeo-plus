@@ -14,6 +14,9 @@ class AboutScreen extends StatelessWidget {
         title: const Text('Sobre o iGeo', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF004D40),
         centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),

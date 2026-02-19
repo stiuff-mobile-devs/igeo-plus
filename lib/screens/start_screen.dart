@@ -18,10 +18,12 @@ class _StartScreenState extends State<StartScreen> {
   final AuthUtils auth = AuthUtils();
   bool _isLoading = true;
   bool accept = false;
+  bool loggedIn = false;
 
   @override
   void initState() {
     super.initState();
+    _checkSignInStatus();
     _checkPermissions();
   }
 
@@ -38,6 +40,17 @@ class _StartScreenState extends State<StartScreen> {
     }
 
     setState(() => _isLoading = false);
+  }
+
+  _checkSignInStatus() {
+    loggedIn = auth.getFirebaseAuthUser() != null;
+  }
+
+  _logOut() async {
+    await auth.signOut();
+    setState(() {
+      loggedIn = false;
+    });
   }
 
   submitForm() async {
@@ -152,7 +165,7 @@ class _StartScreenState extends State<StartScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       await submitForm();
-                      if (auth.getFirebaseAuthUser() == null) {
+                      if (!loggedIn) {
                         Navigator.pushReplacementNamed(context, AppRoutes.LOGIN);
                       } else {
                       Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
@@ -166,6 +179,20 @@ class _StartScreenState extends State<StartScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
+                  loggedIn ?
+                    ElevatedButton(
+                      onPressed: () async {
+                        await _logOut();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                      child: const Text(
+                        'Logout',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                      : const SizedBox.shrink()
                 ],
               ),
             ),
