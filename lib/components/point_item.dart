@@ -11,7 +11,7 @@ class PointItem extends StatefulWidget {
   //final Map<String, dynamic> userData;
   // final Function(int, String, int) onDeletePoint;
   final Function(String) onDeletePoint;
-  final void Function(String, String) onToggleFavorite;
+  final void Function(String, String, bool) onToggleFavorite;
   final bool isFavorite;
 
   const PointItem(
@@ -113,6 +113,7 @@ class _PointItemState extends State<PointItem> {
                     color: Colors.amber,
                   ),
             onPressed: () {
+              widget.onToggleFavorite(widget.point.id!, widget.project.id, !isFavorite);
               setState(() {
                 //print("ESTADO: " + isFavorite.toString());
 
@@ -123,7 +124,6 @@ class _PointItemState extends State<PointItem> {
               //   widget.userData["token"],
               //   widget.point.id!,
               // );
-              widget.onToggleFavorite(widget.point.id!, widget.project.id);
             },
           ),
         ),

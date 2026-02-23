@@ -82,4 +82,13 @@ class FirestoreUtils {
       return null;
     }
   }
+
+  Future<void> updateFavorite(String pointId, String projectId, bool status) async {
+    await _firestore
+        .collection('projects')
+        .doc(projectId)
+        .collection('points')
+        .doc(pointId)
+        .update({'is_favorite': status});
+  }
 }

@@ -55,6 +55,7 @@ class Point with ChangeNotifier {
       'lat': lat,
       'long': long,
       'description': description,
+      'isFavorite': false
     };
   }
 
@@ -72,7 +73,7 @@ class Point with ChangeNotifier {
       image: map['images'] != null
           ? List<String>.from(map['images'])
           : <String>[],
-      isFavorite: /*toBoolean(point["is_favorite"]?.toString() ??*/ false,
+      isFavorite: map['is_favorite'] ?? false,
     );
   }
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/point_list.dart';
 import '../models/project.dart';
 import '../models/point.dart';
 import '../components/point_item_favorite.dart';
-import '../utils/db_utils.dart';
+import '../utils/fb_utils.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
@@ -13,77 +12,67 @@ class FavoriteScreen extends StatefulWidget {
 }
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
-  final PointList pointList = PointList();
+  final FirestoreUtils _firestore = FirestoreUtils();
+  List<Point> favoritePoints = [];
   List<Project> projects = [];
+  bool loading = true;
 
-  bool _toBoolean(dynamic value) {
-    if (value is bool) return value;
-    if (value is String) return value.toLowerCase() == 'true';
-    if (value is int) return value == 1;
-    return false;
-  }
-
-  Future<void> _getProjects() async {
-    final projectData = await DbUtils.getData("projects");
-    setState(() {
-      projects = projectData
-          .map<Project>((project) => Project(
-                id: project["id"]?.toString() ?? '',
-                name: project["project_name"]?.toString() ?? 'Unnamed Project',
-                createdAt: DateTime.now()
-              ))
-          .toList();
-    });
-  }
+  // bool _toBoolean(dynamic value) {
+  //   if (value is bool) return value;
+  //   if (value is String) return value.toLowerCase() == 'true';
+  //   if (value is int) return value == 1;
+  //   return false;
+  // }
 
   Future<void> _getPoints() async {
-    final pointData = await DbUtils.getData("points");
+    projects = await _firestore.getAllProjects();
+    List<Point> allPoints = [];
+    for (Project p in projects) {
+      final pointsData = await _firestore.getPointsByProject(p.id);
+      allPoints.addAll(pointsData);
+    }
     setState(() {
-      pointList.clear();
-
-      for (final point in pointData) {
-        final newPoint = Point(
-          //id: int.tryParse(point["id"]?.toString() ?? '') ?? 0,
-          user_id: int.tryParse(point["user_id"]?.toString() ?? '') ?? 0,
-          project_id: point["project_id"]?.toString() ?? '',
-          name: point["name"]?.toString() ?? 'Unnamed Point',
-          lat: double.tryParse(point["lat"]?.toString() ?? '') ?? 0.0,
-          long: double.tryParse(point["long"]?.toString() ?? '') ?? 0.0,
-          date: point["date"]?.toString() ?? 'No date',
-          time: point["time"]?.toString() ?? 'No time',
-          description: point["description"]?.toString() ?? 'No description',
-          isFavorite: _toBoolean(point["is_favorite"]),
-        );
-
-        if (point["image"] is List) {
-          for (var url in point["image"]) {
-            if (url != null) newPoint.addUrlToImageList(url.toString());
-          }
-        }
-        pointList.addPoint(newPoint);
-      }
+      favoritePoints = allPoints.where((p) => p.isFavorite).toList();
+      loading = false;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _getProjects();
     _getPoints();
   }
 
   @override
   Widget build(BuildContext context) {
-    final favoritePoints = pointList.favoritePoints;
+    if (loading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Colors.amber,
+        ),
+      );
+    }
 
     return Scaffold(
-      body: ListView.builder(
-        itemCount: favoritePoints.length,
-        itemBuilder: (ctx, index) => PointItemFavorite(
-          favoritePoints[index],
-          projects,
+      body: favoritePoints.isNotEmpty
+      ? ListView.builder(
+          itemCount: favoritePoints.length,
+          itemBuilder: (ctx, index) => PointItemFavorite(
+            favoritePoints[index],
+            projects,
+          ),
+      )
+      : const Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.gps_off, color: Colors.amber),
+            SizedBox(width: 5),
+            Text('No favorite points added yet',
+                style: TextStyle(color: Colors.grey)),
+          ],
         ),
-      ),
+      )
     );
   }
 }

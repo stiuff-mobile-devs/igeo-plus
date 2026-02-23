@@ -96,7 +96,7 @@ class _PointsScreenState extends State<PointsScreen> {
       'date': date,
       'time': time,
       'description': description,
-      'is_favorite': 'false',
+      'is_favorite': false,
     };
 
     List<String> encodedImages = [];
@@ -159,8 +159,8 @@ class _PointsScreenState extends State<PointsScreen> {
   //   // return file;
   // }
 
-  void changeFavorite(String pointId, String projectId) {
-    pointList.togglePointFavorite(pointId, projectId);
+  void changeFavorite(String pointId, String projectId, bool newStatus) async {
+    await firestore.updateFavorite(pointId, projectId, newStatus);
   }
 
   Future<void> refresh(BuildContext context) async {
