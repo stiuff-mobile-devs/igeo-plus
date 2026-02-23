@@ -166,7 +166,7 @@ class _StartScreenState extends State<StartScreen> {
                     onPressed: () async {
                       await submitForm();
                       if (!loggedIn) {
-                        Navigator.pushReplacementNamed(context, AppRoutes.LOGIN);
+                        Navigator.pushNamed(context, AppRoutes.LOGIN);
                       } else {
                       Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
                       }

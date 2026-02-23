@@ -66,22 +66,22 @@ class AboutScreen extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            ElevatedButton(
-              onPressed: () {
-                
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 28,
-                  vertical: 12,
-                ),
-              ),
-              child: const Text(
-                'Saiba Mais',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //
+            //   },
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: Theme.of(context).primaryColor,
+            //     padding: const EdgeInsets.symmetric(
+            //       horizontal: 28,
+            //       vertical: 12,
+            //     ),
+            //   ),
+            //   child: const Text(
+            //     'Saiba Mais',
+            //     style: TextStyle(color: Colors.white),
+            //   ),
+            // ),
           ],
         ),
       ),
