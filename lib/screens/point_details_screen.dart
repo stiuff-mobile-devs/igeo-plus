@@ -81,17 +81,17 @@ class PointDetailScreen extends StatelessWidget {
         //   ),
         // ],
         actions: [
-          // IconButton(
-          //   icon: const Icon(Icons.edit, color: Colors.white),
-          //   onPressed: () => Navigator.pushNamed(
-          //     context,
-          //     '/edit-point',
-          //     arguments: {
-          //       'point': point,
-          //       'project': project,
-          //     },
-          //   ),
-          // ),
+          IconButton(
+            icon: const Icon(Icons.edit, color: Colors.white),
+            onPressed: () => Navigator.pushNamed(
+              context,
+              '/edit-point',
+              arguments: {
+                'point': point,
+                'project': project,
+              },
+            ),
+          ),
         ],
       ),
       body: FutureBuilder(

@@ -89,10 +89,10 @@ class _PointsScreenState extends State<PointsScreen> {
     List<File> photos,
   ) async {
     final Map<String, dynamic> pointData = {
-      'project_id': projectId.toString(),
+      'project_id': projectId,
       'name': name,
-      'lat': latitude.toString(),
-      'long': longitude.toString(),
+      'lat': latitude,
+      'long': longitude,
       'date': date,
       'time': time,
       'description': description,

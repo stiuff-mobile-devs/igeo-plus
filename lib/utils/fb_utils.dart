@@ -91,4 +91,22 @@ class FirestoreUtils {
         .doc(pointId)
         .update({'is_favorite': status});
   }
+
+  Future<void> updatePoint(Point point) async {
+    try {
+      if (point.project_id == null || point.id == null) {
+        debugPrint("Error: point.id or project_id is null");
+        return;
+      }
+
+      await _firestore
+          .collection('projects')
+          .doc(point.project_id!)
+          .collection('points')
+          .doc(point.id!)
+          .update(point.toMap());
+    } catch (e) {
+      debugPrint("Error on update point: $e");
+    }
+  }
 }

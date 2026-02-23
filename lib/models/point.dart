@@ -55,7 +55,7 @@ class Point with ChangeNotifier {
       'lat': lat,
       'long': long,
       'description': description,
-      'isFavorite': false
+      'is_favorite': isFavorite
     };
   }
 

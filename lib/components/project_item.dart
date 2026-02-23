@@ -77,11 +77,9 @@ class ProjectItem extends StatelessWidget {
                     size: 14,
                   ),
                   Text(
-                    " " +
-                        DateFormat("d/M/yyyy")
-                            .format(DateTime.now())
-                            .toString(),
-                    style: TextStyle(fontSize: 12),
+                    " ${DateFormat("d/M/yyyy")
+                            .format(project.createdAt)}",
+                    style: const TextStyle(fontSize: 12),
                   )
                 ],
               ),
