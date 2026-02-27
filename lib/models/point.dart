@@ -1,19 +1,54 @@
 import 'package:flutter/widgets.dart';
 import 'dart:io';
+import 'package:hive/hive.dart'; // Importação necessária
 
-class Point with ChangeNotifier {
+// O build_runner usará isso para gerar o arquivo de persistência
+part 'point.g.dart'; 
+
+@HiveType(typeId: 0) // Define esta classe como um objeto do Hive
+class Point extends HiveObject with ChangeNotifier {
+    
+  @HiveField(0)
   String? id;
+
+  @HiveField(1)
   String? name;
+
+  @HiveField(2)
   double? lat;
+
+  @HiveField(3)
   double? long;
+
+  @HiveField(4)
   String? date;
+
+  @HiveField(5)
   String? time;
+
+  @HiveField(6)
   String? description;
+
+  @HiveField(7)
   int? user_id;
+
+  @HiveField(8)
   String? project_id;
+
+  @HiveField(9)
   bool isFavorite;
+
+  @HiveField(10)
   List<String>? image;
+
+  // Nota: Campos como 'File' ou complexos que não devem ser salvos 
+  // no banco local podem ficar sem a anotação @HiveField ou 
+  // você pode criar um Adapter para eles. Por hora, vamos focar nos dados.
   List<File>? pickedImages = [];
+
+  // Campo sugerido para a "Sincronização" citada nas atas
+  @HiveField(11)
+  bool isDirty; 
 
   Point({
     this.id,
@@ -28,24 +63,28 @@ class Point with ChangeNotifier {
     this.isFavorite = false,
     this.image,
     this.pickedImages = const [],
+    this.isDirty = false, // Se for true, precisa subir pro Firebase
   });
 
   void toggleFavorite() {
     isFavorite = !isFavorite;
+    isDirty = true; // Marcar para sincronizar
     notifyListeners();
   }
 
   void addUrlToImageList(String url) {
     image?.add(url);
+    isDirty = true;
   }
 
   void changeCoordinates(double lat, double long) {
     this.lat = lat;
     this.long = long;
+    isDirty = true;
     notifyListeners();
   }
 
-  // Método toMap para conversão para formato de banco de dados
+  // Mantemos o toMap e fromMap para o Firebase continuar funcionando
   Map<String, dynamic> toMap() {
     return {
       'project_id': project_id,
@@ -74,6 +113,7 @@ class Point with ChangeNotifier {
           ? List<String>.from(map['images'])
           : <String>[],
       isFavorite: map['is_favorite'] ?? false,
+      isDirty: false, 
     );
   }
 }

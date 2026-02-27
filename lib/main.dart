@@ -10,6 +10,8 @@ import './screens/start_screen.dart';
 import './screens/tabs_screen.dart';
 import './utils/routes.dart';
 import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import './models/point.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +19,12 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(PointAdapter());
+
+  await Hive.openBox<Point>('points');
 
   runApp(const MyApp());
 }
