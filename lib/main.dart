@@ -12,6 +12,7 @@ import './utils/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import './models/point.dart';
+import './models/project.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,10 @@ Future<void> main() async {
   Hive.registerAdapter(PointAdapter());
 
   await Hive.openBox<Point>('points');
+
+  Hive.registerAdapter(ProjectAdapter());
+
+  await Hive.openBox<Project>('projects');
 
   runApp(const MyApp());
 }

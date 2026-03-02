@@ -1,9 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hive/hive.dart';
+
+part 'project.g.dart';
+
+@HiveType(typeId: 1)
 
 class Project {
+
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String name;
+
+  @HiveField(2)
   DateTime createdAt;
+
+  @HiveField(3)
   String? createdBy;
 
   Project({
