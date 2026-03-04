@@ -109,4 +109,45 @@ class FirestoreUtils {
       debugPrint("Error on update point: $e");
     }
   }
+
+  deletePoint(Point point) async {
+    try {
+      _firestore
+          .collection('projects')
+          .doc(point.project_id)
+          .collection('points')
+          .doc(point.id)
+          .delete();
+    } catch (e) {
+      debugPrint("Error on delete point ${point.id}: $e.");
+      throw Exception("Erro ao excluir ponto.");
+    }
+  }
+
+  editProject(String id, String newName) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('projects')
+          .doc(id)
+          .update({
+        'name': newName,
+      });
+    } catch (e) {
+      debugPrint("Error on edit project $id: $e.");
+      throw Exception("Erro ao editar projeto.");
+    }
+  }
+
+  Future<void> deleteProject(String projectId) async {
+    final ref =
+    FirebaseFirestore.instance.collection('projects').doc(projectId);
+
+    final points = await ref.collection('points').get();
+
+    for (var doc in points.docs) {
+      await doc.reference.delete();
+    }
+
+    await ref.delete();
+  }
 }

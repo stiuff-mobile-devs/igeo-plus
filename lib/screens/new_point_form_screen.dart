@@ -73,7 +73,6 @@ class _NewPointFormScreenState extends State<NewPointFormScreen> {
     );
 
     final pointsBox = Hive.box<Point>('points');
-    pointsBox.add(newPoint);
     await pointsBox.add(newPoint);
 
     Navigator.pop(context, newPoint);

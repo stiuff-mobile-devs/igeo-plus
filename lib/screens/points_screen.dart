@@ -333,6 +333,7 @@ class _PointsScreenState extends State<PointsScreen> {
               color: Colors.white,
             ),
           ),
+          popupMenu()
         ],
       ),
       body: RefreshIndicator(
@@ -380,6 +381,93 @@ class _PointsScreenState extends State<PointsScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  Widget popupMenu() {
+    final TextEditingController controller =
+    TextEditingController(text: widget.project.name);
+
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.more_vert, color: Colors.white),
+      onSelected: (value) {
+        if (value == 'edit') {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Editar nome do projeto'),
+                content: TextField(
+                  controller: controller,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Nome do projeto',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancelar'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final newName = controller.text.trim();
+                      if (newName.isEmpty) return;
+                      await firestore.editProject(widget.project.id, newName);
+                      Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
+                    },
+                    child: const Text('Salvar'),
+                  ),
+                ],
+              );
+            },
+          );
+        } else if (value == 'delete') {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Excluir projeto'),
+              content: const Text('Tem certeza que deseja excluir este projeto e todos os seus pontos?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancelar'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await firestore.deleteProject(widget.project.id);
+                    Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
+                  },
+                  child: const Text('Excluir'),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+      itemBuilder: (context) => [
+        const PopupMenuItem(
+          value: 'edit',
+          child: Row(
+            children: [
+              Icon(Icons.edit, size: 20),
+              SizedBox(width: 8),
+              Text('Editar'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            children: [
+              Icon(Icons.delete, size: 20),
+              SizedBox(width: 8),
+              Text('Excluir'),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
