@@ -94,10 +94,6 @@ class _StartScreenState extends State<StartScreen> {
               // });
               Navigator.of(context).pop();
               await DbUtils.updateAccept();
-
-              Navigator.of(context).pushNamed(
-                AppRoutes.HOME2,
-              );
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
