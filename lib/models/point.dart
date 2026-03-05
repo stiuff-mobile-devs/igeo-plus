@@ -1,11 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'dart:io';
-import 'package:hive/hive.dart'; // Importação necessária
+import 'package:hive/hive.dart';
 
-// O build_runner usará isso para gerar o arquivo de persistência
 part 'point.g.dart'; 
 
-@HiveType(typeId: 0) // Define esta classe como um objeto do Hive
+@HiveType(typeId: 0) 
 class Point extends HiveObject with ChangeNotifier {
     
   @HiveField(0)
@@ -41,12 +40,8 @@ class Point extends HiveObject with ChangeNotifier {
   @HiveField(10)
   List<String>? image;
 
-  // Nota: Campos como 'File' ou complexos que não devem ser salvos 
-  // no banco local podem ficar sem a anotação @HiveField ou 
-  // você pode criar um Adapter para eles. Por hora, vamos focar nos dados.
   List<File>? pickedImages = [];
 
-  // Campo sugerido para a "Sincronização" citada nas atas
   @HiveField(11)
   bool isDirty; 
 
@@ -63,12 +58,12 @@ class Point extends HiveObject with ChangeNotifier {
     this.isFavorite = false,
     this.image,
     this.pickedImages = const [],
-    this.isDirty = false, // Se for true, precisa subir pro Firebase
+    this.isDirty = false,
   });
 
   void toggleFavorite() {
     isFavorite = !isFavorite;
-    isDirty = true; // Marcar para sincronizar
+    isDirty = true; 
     notifyListeners();
   }
 
@@ -84,7 +79,6 @@ class Point extends HiveObject with ChangeNotifier {
     notifyListeners();
   }
 
-  // Mantemos o toMap e fromMap para o Firebase continuar funcionando
   Map<String, dynamic> toMap() {
     return {
       'project_id': project_id,
