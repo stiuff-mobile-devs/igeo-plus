@@ -24,11 +24,9 @@ Future<void> main() async {
   await Hive.initFlutter();
 
   Hive.registerAdapter(PointAdapter());
-
   await Hive.openBox<Point>('points');
 
   Hive.registerAdapter(ProjectAdapter());
-
   await Hive.openBox<Project>('projects');
 
   runApp(const MyApp());
