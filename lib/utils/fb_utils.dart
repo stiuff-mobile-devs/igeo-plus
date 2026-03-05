@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import '../models/point.dart';
 import '../models/project.dart';
 import 'auth_utils.dart';
+import 'package:hive/hive.dart';
 
 class FirestoreUtils {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -42,6 +43,11 @@ class FirestoreUtils {
           .where("created_by", isEqualTo: user?.id)
           .get();
       projects = docs.docs.map((e) => Project.fromMap(e.id, e.data())).toList();
+      // Refatoração do Hive
+      if (projects.isNotEmpty) {
+        final projectBox = Hive.box<Project>('projects');
+        await projectBox.putAll({for (var p in projects) p.id: p});
+      }
       return projects;
     } catch (e) {
       debugPrint("Error on list all projects: $e");
@@ -57,9 +63,18 @@ class FirestoreUtils {
           .collection('points')
           .get();
 
-      return snapshot.docs
+      final points = snapshot.docs
           .map((doc) => Point.fromMap(doc.id, doc.data()))
           .toList();
+
+       // Refatoração do Hive
+       if (points.isNotEmpty) {
+        final pointBox = Hive.box<Point>('points');
+        await pointBox.putAll({for (var p in points) p.id: p}); 
+       }
+
+      return points;
+      
     } catch (e) {
       debugPrint("Error on get all points from project: $e");
       return [];
