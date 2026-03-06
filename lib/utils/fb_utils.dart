@@ -36,13 +36,14 @@ class FirestoreUtils {
 
   Future<List<Project>> getAllProjects() async {
     try {
-      List<Project> projects = [];
       final user = auth.getFirebaseAuthUser();
       final docs = await _firestore
           .collection("projects")
           .where("created_by", isEqualTo: user?.id)
           .get();
-      projects = docs.docs.map((e) => Project.fromMap(e.id, e.data())).toList();
+
+      List<Project> projects = docs.docs.map((e) => Project.fromMap(e.id, e.data())).toList();
+
       // Refatoração do Hive
       if (projects.isNotEmpty) {
         final projectBox = Hive.box<Project>('projects');
@@ -50,8 +51,10 @@ class FirestoreUtils {
       }
       return projects;
     } catch (e) {
-      debugPrint("Error on list all projects: $e");
-      return [];
+      debugPrint("Firebase error, trying Hive: $e");
+
+      final projectBox = Hive.box<Project>('projects');
+      return projectBox.values.toList();
     }
   }
 
@@ -70,14 +73,16 @@ class FirestoreUtils {
        // Refatoração do Hive
        if (points.isNotEmpty) {
         final pointBox = Hive.box<Point>('points');
-        await pointBox.putAll({for (var p in points) p.id: p}); 
+        await pointBox.putAll({for (var p in points) p.id!: p}); 
        }
 
       return points;
       
     } catch (e) {
-      debugPrint("Error on get all points from project: $e");
-      return [];
+      debugPrint("Firebase error, trying Hive: $e");
+
+      final pointBox = Hive.box<Point>('points');
+      return pointBox.values.where((p) => p.project_id == projectId).toList();
     }
   }
 
