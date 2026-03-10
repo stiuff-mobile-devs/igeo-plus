@@ -4,6 +4,7 @@ import '../models/point.dart';
 import '../models/project.dart';
 import 'auth_utils.dart';
 import 'package:hive/hive.dart';
+import 'dart:async';
 
 class FirestoreUtils {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -40,7 +41,13 @@ class FirestoreUtils {
       final docs = await _firestore
           .collection("projects")
           .where("created_by", isEqualTo: user?.id)
-          .get();
+          .get()
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              throw TimeoutException('The connection to Firebase took too long.');
+            },
+          );
 
       List<Project> projects = docs.docs.map((e) => Project.fromMap(e.id, e.data())).toList();
 
@@ -64,8 +71,13 @@ class FirestoreUtils {
           .collection('projects')
           .doc(projectId)
           .collection('points')
-          .get();
-
+          .get()
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              throw TimeoutException('The connection to Firebase took too long.');
+            },
+          );
       final points = snapshot.docs
           .map((doc) => Point.fromMap(doc.id, doc.data()))
           .toList();
