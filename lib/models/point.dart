@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'dart:io';
 import 'package:hive/hive.dart';
+import 'dart:typed_data';
 
 part 'point.g.dart'; 
 
@@ -45,6 +46,9 @@ class Point extends HiveObject with ChangeNotifier {
   @HiveField(11)
   bool isDirty; 
 
+  @HiveField(12)
+  List<Uint8List>? imageBytesList;
+
   Point({
     this.id,
     this.name,
@@ -57,9 +61,10 @@ class Point extends HiveObject with ChangeNotifier {
     this.project_id,
     this.isFavorite = false,
     this.image,
-    this.pickedImages = const [],
     this.isDirty = false,
-  });
+    List<Uint8List>? imageBytesList,
+    this.pickedImages = const [],
+  }) : this.imageBytesList = imageBytesList ?? [];
 
   void toggleFavorite() {
     isFavorite = !isFavorite;
@@ -70,6 +75,13 @@ class Point extends HiveObject with ChangeNotifier {
   void addUrlToImageList(String url) {
     image?.add(url);
     isDirty = true;
+  }
+
+  Future<void> addImageFromBytes(Uint8List bytes) async {
+    imageBytesList ??= [];
+    imageBytesList!.add(bytes);
+    isDirty = true;
+    notifyListeners();
   }
 
   void changeCoordinates(double lat, double long) {

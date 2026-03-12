@@ -7,6 +7,7 @@ import '../models/point.dart';
 import '../models/project.dart';
 import '../components/location_input.dart';
 import 'package:hive/hive.dart';
+import 'dart:typed_data';
 
 class NewPointFormScreen extends StatefulWidget {
   @override
@@ -19,13 +20,19 @@ class _NewPointFormScreenState extends State<NewPointFormScreen> {
   final _formKey = GlobalKey<FormState>();
   List<File> pickedImages = [];
 
-  void addImage(File pickedImage) {
+  Future<void> addImage(File pickedImage) async {
     if (pickedImages.length >= 4) return;
     pickedImages.add(pickedImage);
   }
 
   void sendBackData(BuildContext context, Project project) async {
     final pointProvider = Provider.of<PointProvider>(context, listen: false);
+    
+    List<Uint8List> fotosEmBytes = [];
+    for (var arquivo in pickedImages) {
+    final bytes = await arquivo.readAsBytes(); 
+    fotosEmBytes.add(bytes);
+  }
 
     // if (pointProvider.lat == null || pointProvider.long == null) {
     //   showDialog(
@@ -69,7 +76,8 @@ class _NewPointFormScreenState extends State<NewPointFormScreen> {
       time: DateTime.now().toString().substring(10, 19),
       user_id: 1,
       project_id: project.id,
-      pickedImages: pickedImages,
+      imageBytesList: fotosEmBytes,
+      isDirty: true,
     );
 
     final pointsBox = Hive.box<Point>('points');
