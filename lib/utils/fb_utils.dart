@@ -6,6 +6,7 @@ import 'auth_utils.dart';
 import 'package:hive/hive.dart';
 import 'dart:async';
 
+
 class FirestoreUtils {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final AuthUtils auth = AuthUtils();
