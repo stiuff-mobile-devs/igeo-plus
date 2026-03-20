@@ -57,7 +57,7 @@ class Point extends HiveObject with ChangeNotifier {
     this.project_id,
     this.isFavorite = false,
     this.image,
-    this.pickedImages = const [],
+    this.pickedImages,
     this.isDirty = false,
   });
 

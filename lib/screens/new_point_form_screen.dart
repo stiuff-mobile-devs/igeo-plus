@@ -7,6 +7,8 @@ import '../models/point.dart';
 import '../models/project.dart';
 import '../components/location_input.dart';
 import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
+
 
 class NewPointFormScreen extends StatefulWidget {
   @override
@@ -60,7 +62,11 @@ class _NewPointFormScreenState extends State<NewPointFormScreen> {
       return;
     }
 
+    var uuid = const Uuid();
+    final String manualId = uuid.v4();
+
     final newPoint = Point(
+      id: manualId
       name: _nameController.text,
       description: _descriptionController.text,
       lat: pointProvider.lat,
@@ -70,10 +76,11 @@ class _NewPointFormScreenState extends State<NewPointFormScreen> {
       user_id: 1,
       project_id: project.id,
       pickedImages: pickedImages,
+      isDirty: true,
     );
 
     final pointsBox = Hive.box<Point>('points');
-    await pointsBox.add(newPoint);
+    await pointsBox.put(manualId, newPoint);
 
     Navigator.pop(context, newPoint);
   }
