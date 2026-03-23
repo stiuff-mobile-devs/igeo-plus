@@ -66,7 +66,7 @@ class _NewPointFormScreenState extends State<NewPointFormScreen> {
     final String manualId = uuid.v4();
 
     final newPoint = Point(
-      id: manualId
+      id: manualId,
       name: _nameController.text,
       description: _descriptionController.text,
       lat: pointProvider.lat,
