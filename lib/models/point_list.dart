@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 import '../utils/db_utils.dart';
-
 import 'point.dart';
-
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hive/hive.dart';
 
 class PointList with ChangeNotifier {
   List<Point> points = [];
@@ -48,5 +48,27 @@ class PointList with ChangeNotifier {
   void clear() {
     points = [];
     notifyListeners();
+  }
+  Future<void> syncPointsWithFirebase() async {
+    final pointsBox = Hive.box<Point>('points');
+    
+    final dirtyPoints = pointsBox.values.where((p) => p.isDirty == true).toList();
+
+    for (var point in dirtyPoints) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('points')
+            .doc(point.id)
+            .set(point.toMap());
+
+        point.isDirty = false;
+        await point.save(); 
+        
+        notifyListeners();
+        print("Sincronizado: ${point.name}");
+      } catch (e) {
+        print("Erro na sincronização: $e");
+      }
+    }
   }
 }
