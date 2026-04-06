@@ -56,6 +56,8 @@ class PointList with ChangeNotifier {
 
     for (var point in dirtyPoints) {
       try {
+        point.updatedAt = DateTime.now();
+        
         await FirebaseFirestore.instance
             .collection('points')
             .doc(point.id)
@@ -71,4 +73,41 @@ class PointList with ChangeNotifier {
       }
     }
   }
+  Future<void> loadPointsFromFirebase() async {
+    final pointsBox = Hive.box<Point>('points');
+    
+    try {
+      // 1. Para buscar os pontos da nuvem
+      final snapshot = await FirebaseFirestore.instance.collection('points').get();
+
+      for (var doc in snapshot.docs) {
+        // Criamos o objeto vindo da nuvem (ele nasce com isDirty = false no fromMap)
+        Point remotePoint = Point.fromMap(doc.id, doc.data());
+        
+        // Tentamos achar esse mesmo ponto no seu celular (Hive)
+        Point? localPoint = pointsBox.get(doc.id);
+
+        // ATIVIDADE 1: Lógica de Comparação (Timestamp)
+        // Se o ponto não existe no celular OU se a versão da nuvem for mais nova
+        bool isRemoteNewer = localPoint == null || 
+            (remotePoint.updatedAt != null && localPoint.updatedAt == null) ||
+            (remotePoint.updatedAt != null && localPoint.updatedAt != null && 
+             remotePoint.updatedAt!.isAfter(localPoint.updatedAt!));
+
+        if (isRemoteNewer) {
+          // ATIVIDADE 2: Salva no Hive. 
+          // O isDirty já vai como FALSE aqui porque veio do fromMap.
+          await pointsBox.put(doc.id, remotePoint);
+          print("Ponto ${remotePoint.name} atualizado da nuvem.");
+        }
+      }
+      
+      // Atualiza a lista da memória com o que está no Hive agora
+      points = pointsBox.values.toList();
+      notifyListeners();
+      
+    } catch (e) {
+      print("Erro ao carregar do Firebase: $e");
+    }
+  } // Chave final da classe
 }

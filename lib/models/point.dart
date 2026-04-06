@@ -45,6 +45,9 @@ class Point extends HiveObject with ChangeNotifier {
   @HiveField(11)
   bool isDirty; 
 
+  @HiveField(12)
+  DateTime? updatedAt;
+
   Point({
     this.id,
     this.name,
@@ -59,12 +62,18 @@ class Point extends HiveObject with ChangeNotifier {
     this.image,
     this.pickedImages,
     this.isDirty = false,
+    this.updatedAt,
   });
+  //Função para atualizar o tempo sempre que algo mudar
+  void _updateTimestamp() {
+    updatedAt = DateTime.now();
+    isDirty = true;
+    notifyListeners();
+  }
 
   void toggleFavorite() {
     isFavorite = !isFavorite;
-    isDirty = true; 
-    notifyListeners();
+    _updateTimestamp(); // Atualiza o tempo e marca ele como sujo
   }
 
   void addUrlToImageList(String url) {
@@ -88,7 +97,9 @@ class Point extends HiveObject with ChangeNotifier {
       'lat': lat,
       'long': long,
       'description': description,
-      'is_favorite': isFavorite
+      'is_favorite': isFavorite,
+      // Manda para o Firebase: COnverte DateTime para String ou milissegundos
+      'updated_at': updatedAt?.millisecondsSinceEpoch,
     };
   }
 
@@ -107,6 +118,11 @@ class Point extends HiveObject with ChangeNotifier {
           ? List<String>.from(map['images'])
           : <String>[],
       isFavorite: map['is_favorite'] ?? false,
+      // BUSCANDO DA NUVEM: Converte de volta para DateTime
+      updatedAt: map['updated_at'] != null 
+          ? DateTime.fromMillisecondsSinceEpoch(map['updated_at']) 
+          : null,
+      // AQUI ESTÁ A DICA DA CARINA: Se vem da nuvem, não está sujo localmente!
       isDirty: false, 
     );
   }
