@@ -29,13 +29,14 @@ class PointAdapter extends TypeAdapter<Point> {
       isFavorite: fields[9] as bool,
       image: (fields[10] as List?)?.cast<String>(),
       isDirty: fields[11] as bool,
+      updatedAt: fields[12] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Point obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -59,7 +60,9 @@ class PointAdapter extends TypeAdapter<Point> {
       ..writeByte(10)
       ..write(obj.image)
       ..writeByte(11)
-      ..write(obj.isDirty);
+      ..write(obj.isDirty)
+      ..writeByte(12)
+      ..write(obj.updatedAt);
   }
 
   @override

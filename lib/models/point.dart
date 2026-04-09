@@ -45,6 +45,9 @@ class Point extends HiveObject with ChangeNotifier {
   @HiveField(11)
   bool isDirty; 
 
+  @HiveField(12)
+  DateTime? updatedAt;
+
   Point({
     this.id,
     this.name,
@@ -59,7 +62,13 @@ class Point extends HiveObject with ChangeNotifier {
     this.image,
     this.pickedImages = const [],
     this.isDirty = false,
+    this.updatedAt,
   });
+  void _markAsDirty() {
+    isDirty = true;
+    updatedAt = DateTime.now();
+    notifyListeners();
+  }
 
   void toggleFavorite() {
     isFavorite = !isFavorite;
@@ -88,7 +97,9 @@ class Point extends HiveObject with ChangeNotifier {
       'lat': lat,
       'long': long,
       'description': description,
-      'is_favorite': isFavorite
+      'is_favorite': isFavorite,
+      'updated_at': updatedAt?.toIso8601String(),
+      'is_dirty': isDirty,
     };
   }
 
@@ -108,6 +119,9 @@ class Point extends HiveObject with ChangeNotifier {
           : <String>[],
       isFavorite: map['is_favorite'] ?? false,
       isDirty: false, 
+      updatedAt: map['updated_at'] != null 
+          ? DateTime.parse(map['updated_at']) 
+          : DateTime.now(),
     );
   }
 }
