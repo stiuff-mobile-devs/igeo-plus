@@ -19,6 +19,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   dynamic projectData;
 
   getProjects() async {
+    await firestore.syncDirtyData();
     projects = await firestore.getAllProjects();
     //projects = [];
     // projectData = await DbUtils.getData("projects");
