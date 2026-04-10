@@ -170,4 +170,47 @@ class FirestoreUtils {
 
     await ref.delete();
   }
+
+  Future<void> syncDirtyData() async {
+    try {
+      final projectBox = Hive.box<Project>('projects');
+      final pointBox = Hive.box<Point>('points');
+
+      // VARREDURA DE PROJETOS 
+      final dirtyProjects = projectBox.values.where((p) => p.isDirty).toList();
+      for (var project in dirtyProjects) {
+        if (project.id == null || project.id!.isEmpty) {
+          final saved = await createProject(project);
+          if (saved != null) {
+            project.isDirty = false;
+            await projectBox.put(saved.id, project);
+          }
+        } else {
+          await editProject(project.id!, project.name);
+          project.isDirty = false;
+          await projectBox.put(project.id, project);
+        }
+      }
+
+      // VARREDURA DE PONTOS
+      final dirtyPoints = pointBox.values.where((p) => p.isDirty).toList();
+      for (var point in dirtyPoints) {
+
+        if (point.id == null || point.id!.isEmpty) {
+          await createPoint(point.toMap());
+          point.isDirty = false;
+
+          await pointBox.put(point.id, point);
+        } else {
+          
+          await updatePoint(point);
+          point.isDirty = false;
+          await pointBox.put(point.id, point);
+        }
+      }
+      debugPrint("Sincronização concluída!");
+    } catch (e) {
+      debugPrint("Erro na sincronização: $e");
+    }
+  }
 }
