@@ -43,7 +43,7 @@ class Point extends HiveObject with ChangeNotifier {
   List<File>? pickedImages = [];
 
   @HiveField(11)
-  bool isDirty; 
+  bool isDirty;
 
   Point({
     this.id,
@@ -81,6 +81,21 @@ class Point extends HiveObject with ChangeNotifier {
 
   Map<String, dynamic> toMap() {
     return {
+      'project_id': project_id,
+      'name': name,
+      'date': date,
+      'time': time,
+      'lat': lat,
+      'long': long,
+      'description': description,
+      'is_favorite': isFavorite,
+      'images': image,
+    };
+  }
+
+  Map<String, dynamic> toMapCsv() {
+    return {
+      'id': id,
       'project_id': project_id,
       'name': name,
       'date': date,

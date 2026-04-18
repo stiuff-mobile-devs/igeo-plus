@@ -21,13 +21,14 @@ class ProjectAdapter extends TypeAdapter<Project> {
       name: fields[1] as String,
       createdAt: fields[2] as DateTime,
       createdBy: fields[3] as String?,
+      isDirty: fields[4] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Project obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class ProjectAdapter extends TypeAdapter<Project> {
       ..writeByte(2)
       ..write(obj.createdAt)
       ..writeByte(3)
-      ..write(obj.createdBy);
+      ..write(obj.createdBy)
+      ..writeByte(4)
+      ..write(obj.isDirty);
   }
 
   @override

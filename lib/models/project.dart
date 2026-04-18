@@ -4,8 +4,7 @@ import 'package:hive/hive.dart';
 part 'project.g.dart';
 
 @HiveType(typeId: 1)
-
-class Project {
+class Project extends HiveObject {
 
   @HiveField(0)
   String id;
@@ -19,11 +18,15 @@ class Project {
   @HiveField(3)
   String? createdBy;
 
+  @HiveField(4)
+  bool isDirty;
+
   Project({
-    this.id = "",
+    required this.id,
     required this.name,
     required this.createdAt,
-    this.createdBy
+    this.createdBy,
+    required this.isDirty
   });
 
   Map<String, dynamic> toMap() {
@@ -39,7 +42,8 @@ class Project {
       id: id,
       name: map['name'],
       createdAt: (map["created_at"] as Timestamp).toDate(),
-      createdBy: map["created_by"]
+      createdBy: map["created_by"],
+      isDirty: false
     );
   }
 }

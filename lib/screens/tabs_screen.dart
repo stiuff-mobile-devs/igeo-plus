@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:igeo/utils/fb_utils.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../utils/db_utils.dart';
 import '../screens/favorite_screen.dart';
@@ -145,8 +146,9 @@ class _TabsScreenState extends State<TabsScreen> {
         actions: [
           IconButton(
             onPressed: () async {
+              FirestoreUtils fs = FirestoreUtils();
               try {
-                final path = await DbUtils.downloadData();
+                final path = await fs.downloadData();
                 if (path != null) {
                   showExportResult(context, path);
                 } else {

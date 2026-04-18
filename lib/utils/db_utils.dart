@@ -13,7 +13,7 @@ import 'package:share_plus/share_plus.dart';
 import '../models/project.dart';
 
 class DbUtils {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   static Future<Database> database() async {
     final dbPath = await getDatabasesPath();
@@ -178,6 +178,7 @@ class DbUtils {
   }
 
   static Future<String?> downloadData() async {
+
     final db = await database();
     try {
       final List<Map<String, dynamic>> result = await db.rawQuery(

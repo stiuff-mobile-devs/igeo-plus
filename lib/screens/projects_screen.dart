@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:igeo/utils/fb_utils.dart';
+import 'package:uuid/uuid.dart';
 
 import '../components/new_project_form.dart';
 import '../components/project_item.dart';
@@ -19,6 +20,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   dynamic projectData;
 
   getProjects() async {
+    await firestore.synchronize();
     projects = await firestore.getAllProjects();
     //projects = [];
     // projectData = await DbUtils.getData("projects");
@@ -42,12 +44,15 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       'project_name': name,
     });
   }
-
+  static const uuid = Uuid();
   void _addProject(String name) async {
     Project project = Project(
-              name: name,
-              createdAt: DateTime.now(),
+      id: uuid.v1(),
+      name: name,
+      createdAt: DateTime.now(),
+      isDirty: true
     );
+
     project = await firestore.createProject(project) ?? project;
     setState(() {projects.add(project);});
     // postProject(name).then((value) => setState(() {

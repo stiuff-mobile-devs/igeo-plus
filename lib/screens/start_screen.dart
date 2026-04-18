@@ -158,25 +158,30 @@ class _StartScreenState extends State<StartScreen> {
                     height: 300,
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await submitForm();
-                      if (!loggedIn) {
-                        Navigator.pushNamed(context, AppRoutes.LOGIN);
-                      } else {
-                      Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                    ),
-                    child: const Text(
-                      'Enter',
-                      style: TextStyle(color: Colors.white),
+                  SizedBox(
+                    width: 100,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await submitForm();
+                        if (!loggedIn) {
+                          Navigator.pushNamed(context, AppRoutes.LOGIN);
+                        } else {
+                          Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                      child: const Text(
+                        'Enter',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   loggedIn ?
-                    ElevatedButton(
+                  SizedBox(
+                    width: 100,
+                    child: ElevatedButton(
                       onPressed: () async {
                         await _logOut();
                       },
@@ -187,7 +192,8 @@ class _StartScreenState extends State<StartScreen> {
                         'Logout',
                         style: TextStyle(color: Colors.white),
                       ),
-                    )
+                    ),
+                  )
                       : const SizedBox.shrink()
                 ],
               ),

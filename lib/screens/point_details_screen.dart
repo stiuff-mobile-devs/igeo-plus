@@ -81,67 +81,22 @@ class PointDetailScreen extends StatelessWidget {
         //   ),
         // ],
         actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
-            onSelected: (value) {
-              if (value == 'edit') {
-                Navigator.pushNamed(
-                  context,
-                  '/edit-point',
-                  arguments: {
-                    'point': point,
-                    'project': project,
-                  },
-                );
-              } else if (value == 'delete') {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Excluir ponto'),
-                    content: const Text('Tem certeza que deseja excluir este ponto?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancelar'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          firestore.deletePoint(point);
-                        },
-                        child: const Text('Excluir'),
-                      ),
-                    ],
-                  ),
-                );
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'edit',
-                child: Row(
-                  children: [
-                    Icon(Icons.edit, size: 20),
-                    SizedBox(width: 8),
-                    Text('Editar'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete, size: 20),
-                    SizedBox(width: 8),
-                    Text('Excluir'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
+          IconButton(
+            onPressed: () async {
+              Navigator.pushNamed(
+              context,
+              '/edit-point',
+              arguments: {
+              'point': point,
+              'project': project,
+              },
+              );
+           },
+            icon: const Icon(
+            Icons.edit,
+            color: Colors.white,
+            ),
+           )]
       ),
       body: FutureBuilder(
         future: loadData(),

@@ -4,6 +4,7 @@ import '../screens/points_screen.dart';
 //import 'package:igeo_flutter/screens/project_points_screen.dart';
 
 import '../models/project.dart';
+import '../utils/fb_utils.dart';
 //import '../utils/routes.dart';
 
 class ProjectItem extends StatelessWidget {
@@ -22,6 +23,8 @@ class ProjectItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FirestoreUtils firestore = FirestoreUtils();
+
     return Dismissible(
       direction: DismissDirection.horizontal,
       background: Padding(
@@ -38,10 +41,33 @@ class ProjectItem extends StatelessWidget {
         ),
       ),
       key: ValueKey(project.id),
-      onDismissed: (_) {
-        onDeleteProject(
-          project.id,
+      confirmDismiss: (direction) async {
+        final confirm = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Excluir projeto'),
+            content: const Text('Tem certeza que deseja excluir este projeto e todos os seus pontos?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(context, true);
+                },
+                child: const Text('Excluir'),
+              ),
+            ],
+          ),
         );
+
+        if (confirm == true) {
+          await firestore.deleteProject(project.id);
+          return true;
+        }
+
+        return false;
       },
       child: Padding(
         padding: const EdgeInsets.all(2.0),

@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:open_file/open_file.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/point.dart';
 import '../models/point_list.dart';
@@ -48,7 +49,7 @@ class _PointsScreenState extends State<PointsScreen> {
 
     pointList.points = await firestore.getPointsByProject(projectId);
 
-    pointData = await DbUtils.getData("points");
+    //pointData = await DbUtils.getData("points");
     if (pointData.isEmpty) return;
 
     // pointData.forEach((point) {
@@ -74,9 +75,10 @@ class _PointsScreenState extends State<PointsScreen> {
     //
     //   pointList.addPoint(newPoint);
     // });
-
     return pointData;
   }
+
+  final uuid = Uuid();
 
   Future postPoint(
     String projectId,
@@ -88,27 +90,30 @@ class _PointsScreenState extends State<PointsScreen> {
     String description,
     List<File> photos,
   ) async {
-    final Map<String, dynamic> pointData = {
-      'project_id': projectId,
-      'name': name,
-      'lat': latitude,
-      'long': longitude,
-      'date': date,
-      'time': time,
-      'description': description,
-      'is_favorite': false,
-    };
+    final Point pointData = Point (
+      id: uuid.v1(),
+      project_id: projectId,
+      name: name,
+      lat: latitude,
+      long: longitude,
+      date: date,
+      time: time,
+      description: description,
+      isFavorite: false,
+      isDirty: true,
+      image: []
+    );
 
-    List<String> encodedImages = [];
+    List<String>? encodedImages = [];
 
     for (int i = 0; i < photos.length && i < 4; i++) {
       final encoded = await compressAndEncodeImage(photos[i].path);
       if (encoded != null) {
-        encodedImages.add(encoded);
+        pointData.image?.add(encoded);
       }
     }
 
-    pointData['images'] = encodedImages;
+    //pointData.image = encodedImages;
 
     // for (int i = 0; i < 4; i++) {
     //   pointData['image${i + 1}'] = (i < photos.length) ? photos[i].path : '';
@@ -299,21 +304,21 @@ class _PointsScreenState extends State<PointsScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            onPressed: () async {
-              try {
-                final path = await DbUtils.downloadData();
-                if (path != null) {
-                  showExportResult(context, path);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("No data to export")));
-                }
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Export failed: ${e.toString()}")));
-              }
-            },
+          // IconButton(
+          //   onPressed: () async {
+          //     try {
+          //       final path = await firestore.downloadData();
+          //       if (path != null) {
+          //         showExportResult(context, path);
+          //       } else {
+          //         ScaffoldMessenger.of(context).showSnackBar(
+          //             const SnackBar(content: Text("No data to export")));
+          //       }
+          //     } catch (e) {
+          //       ScaffoldMessenger.of(context).showSnackBar(
+          //           SnackBar(content: Text("Export failed: ${e.toString()}")));
+          //     }
+          //   },
             // onPressed: () {
             //   DbUtils.downloadData();
             //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -328,11 +333,11 @@ class _PointsScreenState extends State<PointsScreen> {
             //   //     .pushNamedAndRemoveUntil(AppRoutes.HOME, (route) => false);
             //   //logOut();
             // },
-            icon: const Icon(
-              Icons.download,
-              color: Colors.white,
-            ),
-          ),
+            // icon: const Icon(
+            //   Icons.download,
+            //   color: Colors.white,
+            // ),
+          //),
           popupMenu()
         ],
       ),
@@ -388,86 +393,44 @@ class _PointsScreenState extends State<PointsScreen> {
     final TextEditingController controller =
     TextEditingController(text: widget.project.name);
 
-    return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert, color: Colors.white),
-      onSelected: (value) {
-        if (value == 'edit') {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Editar nome do projeto'),
-                content: TextField(
-                  controller: controller,
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Nome do projeto',
-                    border: OutlineInputBorder(),
-                  ),
+    return IconButton(
+      onPressed: () async {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Editar nome do projeto'),
+              content: TextField(
+                controller: controller,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: 'Nome do projeto',
+                  border: OutlineInputBorder(),
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancelar'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final newName = controller.text.trim();
-                      if (newName.isEmpty) return;
-                      await firestore.editProject(widget.project.id, newName);
-                      Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
-                    },
-                    child: const Text('Salvar'),
-                  ),
-                ],
-              );
-            },
-          );
-        } else if (value == 'delete') {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('Excluir projeto'),
-              content: const Text('Tem certeza que deseja excluir este projeto e todos os seus pontos?'),
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: const Text('Cancelar'),
                 ),
-                TextButton(
+                ElevatedButton(
                   onPressed: () async {
-                    await firestore.deleteProject(widget.project.id);
+                    final newName = controller.text.trim();
+                    if (newName.isEmpty) return;
+                    await firestore.editProject(widget.project.id, newName);
                     Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
                   },
-                  child: const Text('Excluir'),
+                  child: const Text('Salvar'),
                 ),
               ],
-            ),
-          );
-        }
+            );
+          },
+        );
       },
-      itemBuilder: (context) => [
-        const PopupMenuItem(
-          value: 'edit',
-          child: Row(
-            children: [
-              Icon(Icons.edit, size: 20),
-              SizedBox(width: 8),
-              Text('Editar'),
-            ],
-          ),
-        ),
-        const PopupMenuItem(
-          value: 'delete',
-          child: Row(
-            children: [
-              Icon(Icons.delete, size: 20),
-              SizedBox(width: 8),
-              Text('Excluir'),
-            ],
-          ),
-        ),
-      ],
+      icon: const Icon(
+        Icons.edit,
+        color: Colors.white,
+      ),
     );
   }
 }
