@@ -7,56 +7,52 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:343376983772:android:e1d74a3bc24d2b828ae619",
-        "android_client_info": {
-          "package_name": "br.uff.igeoplus"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "343376983772-mbtooh7n0aia89kucp5p7dno61hgjp2c.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.uff.igeoplus",
-            "certificate_hash": "6b8f790b5bea471646bf76b9b9ce71eb1f577743"
-          }
-        },
-        {
-          "client_id": "343376983772-totjsi7t8ktnkbjg5mvfrqpcj57i0buo.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBmWfA1OIolnpYCTgSsb3o9sm83U55YG7g"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "343376983772-totjsi7t8ktnkbjg5mvfrqpcj57i0buo.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "343376983772-aijbgj0ti56pi5iqknf7r2nrj5416j4q.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "br.uff.igeo-plus"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:343376983772:android:0d360fb7909927938ae619",
         "android_client_info": {
           "package_name": "br.uff.igeoplusplus"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "343376983772-0ssmukreq7vakfckp5thq69vnrq3ph17.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.uff.igeoplusplus",
+            "certificate_hash": "6b8f790b5bea471646bf76b9b9ce71eb1f577743"
+          }
+        },
+        {
+          "client_id": "343376983772-6duvdvf1ldn9pd5bl8udk9p1m1lfufkd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.uff.igeoplusplus",
+            "certificate_hash": "bb7fd5f66da5dce3adba4588223c9df69e3eaa32"
+          }
+        },
+        {
+          "client_id": "343376983772-jmehvfq9oe5iql7jamtr50844cpj1uj9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.uff.igeoplusplus",
+            "certificate_hash": "4e41c65e59263d754e20f3fc6b3ad2b43830b941"
+          }
+        },
+        {
+          "client_id": "343376983772-lt3752mcvt0uiqq69jhsj735ejugo8sf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.uff.igeoplusplus",
+            "certificate_hash": "5372e3b6f2cfdfa8f7eec8e135aa49edc79f0704"
+          }
+        },
+        {
+          "client_id": "343376983772-vd9q2mp1708vi420t7d8plav9fqtptom.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.uff.igeoplusplus",
+            "certificate_hash": "a142161875dd810e38b343e61d1acaae92818acf"
+          }
+        },
         {
           "client_id": "343376983772-totjsi7t8ktnkbjg5mvfrqpcj57i0buo.apps.googleusercontent.com",
           "client_type": 3
