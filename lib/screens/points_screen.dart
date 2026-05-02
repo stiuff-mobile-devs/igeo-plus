@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:igeo/screens/project_map_screen.dart';
 
 import 'dart:io';
 
@@ -378,13 +379,36 @@ class _PointsScreenState extends State<PointsScreen> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          awaitResultFromNewPointScreen();
-          setState(() {});
-        },
-        backgroundColor: Theme.of(context).primaryColor,
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              final points = pointList.getPointsForProject(project.id);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProjectMapScreen(
+                    points: points,
+                    project: widget.project,
+                  ),
+                ),
+              );
+            },
+            heroTag: "map_btn",
+            child: const Icon(Icons.map),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () {
+              awaitResultFromNewPointScreen();
+              setState(() {});
+            },
+            heroTag: "new_point_btn",
+            backgroundColor: Theme.of(context).primaryColor,
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }

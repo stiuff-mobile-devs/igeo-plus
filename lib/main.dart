@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:igeo/screens/login_screen.dart';
+import 'package:igeo/screens/project_map_screen.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:igeo/screens/edit_point_screen.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:igeo/utils/auth_utils.dart';
 import 'package:sign_button/sign_button.dart';
-
+import 'dart:io';
 import '../utils/routes.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -43,10 +43,16 @@ class LoginScreen extends StatelessWidget {
                 }
               },
             ),
-
-            const SizedBox(height: 40),
-
-
+            SignInButton(
+              buttonType: ButtonType.appleDark,
+              btnText: "Entrar com a Apple",
+              onPressed: () async {
+                bool success = await auth.signInWithApple();
+                if (success) {
+                  Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
+                }
+              },
+            ),
           ],
         ),
       ),

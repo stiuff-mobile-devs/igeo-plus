@@ -23,6 +23,55 @@ class AuthUtils {
     }
   }
 
+  Future<bool> signInWithApple() async {
+    try {
+      final appleProvider = fb_auth.AppleAuthProvider();
+      appleProvider.addScope('email');
+      appleProvider.addScope('name');
+
+      final credential = await auth.signInWithProvider(appleProvider);
+      final user = credential.user;
+
+      if (user != null) {
+        final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
+
+        String? email = user.email;
+        String? name = user.displayName;
+
+        if (isNewUser) {
+          final profile = credential.additionalUserInfo?.profile;
+
+          if (profile != null) {
+            name = profile['name']?['firstName'] != null
+                ? "${profile['name']['firstName']} ${profile['name']['lastName'] ??
+                ''}"
+                : name;
+          }
+        }
+
+        Map<String, dynamic> data = {'email': email};
+        if (name != null) {
+          data['name'] = name;
+        }
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(data, SetOptions(merge: true)
+        );
+
+        debugPrint("Apple sign-in successful: $email");
+        return true;
+      }
+
+      debugPrint("Apple sign-in failed or cancelled.");
+      return false;
+    } catch (err) {
+      debugPrint("Erro de Login Apple: $err");
+      return false;
+    }
+  }
+
   // Future<bool> signInSilently() async {
   //   try {
   //     final googleUser = await googleSignIn.signInSilently();
