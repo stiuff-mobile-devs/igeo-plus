@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/igeo_appbar.dart';
@@ -178,26 +180,98 @@ class _StartScreenState extends State<StartScreen> {
                       ),
                     ),
                   ),
-                  loggedIn ?
-                  SizedBox(
-                    width: 100,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await _logOut();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                      ),
-                      child: const Text(
-                        'Logout',
-                        style: TextStyle(color: Colors.white),
+                  if (loggedIn) ... [
+                    SizedBox(
+                      width: 100,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await _logOut();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                        ),
+                        child: const Text(
+                          'Logout',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
-                  )
-                      : const SizedBox.shrink()
+                    const SizedBox(height: 50),
+                    TextButton(
+                      onPressed: () async {
+                        final confirm = await _showDeleteDialog(context);
+
+                        if (confirm == true) {
+                          await deleteAccount();
+                        }
+                      },
+                      child: const Text(
+                        'Delete account',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ]
                 ],
               ),
             ),
+    );
+  }
+
+  Future<void> deleteAccount() async {
+    final AuthUtils auth = AuthUtils();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    final uid = user.uid;
+    final providerId = user.providerData.first.providerId;
+
+    try {
+      if (providerId == 'google.com') {
+        await auth.signInWithGoogle();
+      } else if (providerId == 'apple.com') {
+        final appleProvider = AppleAuthProvider();
+        await user.reauthenticateWithProvider(appleProvider);
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .delete();
+
+      await user.delete();
+      await _logOut();
+    } catch (e) {
+      print("Erro ao excluir conta: $e");
+      rethrow;
+    }
+  }
+
+  Future<bool?> _showDeleteDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Excluir conta'),
+          content: const Text(
+            'Tem certeza que deseja excluir sua conta? Essa ação é irreversível.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text(
+                'Excluir',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
