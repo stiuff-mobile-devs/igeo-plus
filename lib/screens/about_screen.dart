@@ -1,0 +1,90 @@
+import 'package:flutter/material.dart';
+
+class AboutScreen extends StatelessWidget {
+  final String packageVersion;
+  const AboutScreen({
+    super.key,
+    required this.packageVersion,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sobre o iGeo', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF004D40),
+        centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.map_outlined,
+              size: 90,
+              color: const Color(0xFF004D40),
+            ),
+
+            const SizedBox(height: 32),
+
+            const Text(
+              'iGeo',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            const Text(
+              'Aplicativo de georreferenciamento para visualização e organização de pontos e projetos geográficos.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
+            ),
+
+            const SizedBox(height: 28),
+
+            const Divider(indent: 60, endIndent: 60),
+
+            const SizedBox(height: 12),
+
+            Text(
+              packageVersion,
+              style: const TextStyle(
+                fontWeight: FontWeight.w300,
+                color: Colors.black54,
+              ),
+            ),
+
+            const SizedBox(height: 40),
+
+            // ElevatedButton(
+            //   onPressed: () {
+            //
+            //   },
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: Theme.of(context).primaryColor,
+            //     padding: const EdgeInsets.symmetric(
+            //       horizontal: 28,
+            //       vertical: 12,
+            //     ),
+            //   ),
+            //   child: const Text(
+            //     'Saiba Mais',
+            //     style: TextStyle(color: Colors.white),
+            //   ),
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1,3 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:igeo/screens/login_screen.dart';
+import 'package:igeo/screens/project_map_screen.dart';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:igeo/screens/edit_point_screen.dart';
 import './models/point_list.dart';
@@ -7,8 +11,25 @@ import './screens/start_screen.dart';
 import './screens/tabs_screen.dart';
 import './utils/routes.dart';
 import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import './models/point.dart';
+import './models/project.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(PointAdapter());
+  await Hive.openBox<Point>('points');
+
+  Hive.registerAdapter(ProjectAdapter());
+  await Hive.openBox<Project>('projects');
+
   runApp(const MyApp());
 }
 
@@ -52,6 +73,7 @@ class MyApp extends StatelessWidget {
         routes: {
           AppRoutes.HOME2: (ctx) => TabsScreen(),
           AppRoutes.NEW_POINT: (ctx) => NewPointFormScreen(),
+          AppRoutes.LOGIN: (ctx) => const LoginScreen(),
           AppRoutes.POINT_DETAILS: (ctx) => PointDetailScreen(),
           '/edit-point': (context) => const EditPointScreen(),
         },

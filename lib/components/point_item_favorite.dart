@@ -16,7 +16,7 @@ class PointItemFavorite extends StatelessWidget {
   const PointItemFavorite(this.point, this.projects, {super.key});
 
   void _goToPointDetailsScreen(
-      BuildContext context, List<Project> projects, Point point) {
+      BuildContext context) {
     Project project =
         projects.where((project) => project.id == point.project_id).first;
     Navigator.of(context).pushNamed(AppRoutes.POINT_DETAILS,
@@ -43,7 +43,7 @@ class PointItemFavorite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => _goToPointDetailsScreen(context, projects, point),
+      onTap: () => _goToPointDetailsScreen(context),
       splashColor: Colors.amber,
       hoverColor: const Color.fromARGB(255, 181, 220, 238),
       child: ListTile(

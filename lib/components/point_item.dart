@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/point.dart';
 import '../models/project.dart';
 
+import '../utils/fb_utils.dart';
 import '../utils/routes.dart';
 
 class PointItem extends StatefulWidget {
@@ -10,8 +11,8 @@ class PointItem extends StatefulWidget {
   final Project project;
   //final Map<String, dynamic> userData;
   // final Function(int, String, int) onDeletePoint;
-  final Function(int) onDeletePoint;
-  final void Function(int, int) onToggleFavorite;
+  final Function(String) onDeletePoint;
+  final void Function(String, String, bool) onToggleFavorite;
   final bool isFavorite;
 
   const PointItem(
@@ -28,6 +29,7 @@ class PointItem extends StatefulWidget {
 }
 
 class _PointItemState extends State<PointItem> {
+  final FirestoreUtils firestore = FirestoreUtils();
   bool isFavorite = false;
   void _goToPointDetailsScreen(
       BuildContext context, Project project, Point point) {
@@ -50,8 +52,31 @@ class _PointItemState extends State<PointItem> {
       hoverColor: const Color.fromARGB(255, 181, 220, 238),
       child: Dismissible(
         key: ValueKey(widget.point.id),
-        onDismissed: (_) async {
-          await widget.onDeletePoint(widget.point.id!);
+        confirmDismiss: (direction) async {
+          final confirm = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Excluir ponto'),
+              content: const Text('Tem certeza que deseja excluir este ponto?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Cancelar'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('Excluir'),
+                ),
+              ],
+            ),
+          );
+
+          if (confirm == true) {
+            await firestore.deletePoint(widget.point);
+            return true;
+          }
+
+          return false;
         },
         direction: DismissDirection.horizontal,
         background: Container(
@@ -113,6 +138,7 @@ class _PointItemState extends State<PointItem> {
                     color: Colors.amber,
                   ),
             onPressed: () {
+              widget.onToggleFavorite(widget.point.id!, widget.project.id, !isFavorite);
               setState(() {
                 //print("ESTADO: " + isFavorite.toString());
 
@@ -123,7 +149,6 @@ class _PointItemState extends State<PointItem> {
               //   widget.userData["token"],
               //   widget.point.id!,
               // );
-              widget.onToggleFavorite(widget.point.id!, widget.project.id);
             },
           ),
         ),

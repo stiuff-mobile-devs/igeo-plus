@@ -12,3 +12,8 @@
 
 - **Flutter** for cross-platform development.  
 - **SQLite** for local data storage. 
+
+## About Screen ℹ️
+
+- **Application information**: Displays general information about iGeo, including its purpose and usage context.  
+- **Quick access**: Available through the information icon in the top AppBar.

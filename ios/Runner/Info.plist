@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>Este app precisa da sua localização para salvar as coordenadas de um ponto.</string>
+  <key>NSCameraUsageDescription</key>
+  <string>Precisamos da câmera para tirar fotos dos registros.</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>Precisamos acessar suas fotos para inserir em registros.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:igeo/utils/fb_utils.dart';
+import 'package:uuid/uuid.dart';
 
 import '../components/new_project_form.dart';
 import '../components/project_item.dart';
@@ -13,25 +15,28 @@ class ProjectsScreen extends StatefulWidget {
 class _ProjectsScreenState extends State<ProjectsScreen> {
   // Placeholder for the list of projects
   List<Project> projects = [];
+  FirestoreUtils firestore = FirestoreUtils();
 
   dynamic projectData;
 
   getProjects() async {
-    projects = [];
-    projectData = await DbUtils.getData("projects");
-    if (projectData.length == 0) {
-      print("vazio");
-      return;
-    }
-
-    projectData.forEach((project) {
-      projects.add(
-        Project(id: project["id"], name: project["project_name"]),
-      );
-    });
-    projects.forEach(
-      (project) => print("${project.id} - ${project.name}"),
-    );
+    await firestore.synchronize();
+    projects = await firestore.getAllProjects();
+    //projects = [];
+    // projectData = await DbUtils.getData("projects");
+    // if (projectData.length == 0) {
+    //   print("vazio");
+    //   return;
+    // }
+    //
+    // projectData.forEach((project) {
+    //   projects.add(
+    //     Project(id: project["id"], name: project["project_name"]),
+    //   );
+    // });
+    // projects.forEach(
+    //   (project) => print("${project.id} - ${project.name}"),
+    // );
   }
 
   Future postProject(String name) async {
@@ -39,14 +44,24 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       'project_name': name,
     });
   }
+  static const uuid = Uuid();
+  void _addProject(String name) async {
+    Project project = Project(
+      id: uuid.v1(),
+      name: name,
+      createdAt: DateTime.now(),
+      isDirty: true
+    );
 
-  void _addProject(String name) {
-    postProject(name).then((value) => setState(() {
-          projects.add(Project(
-            id: projects.isEmpty ? 0 : projects.last.id + 1,
-            name: name,
-          ));
-        }));
+    project = await firestore.createProject(project) ?? project;
+    setState(() {projects.add(project);});
+    // postProject(name).then((value) => setState(() {
+    //       projects.add(Project(
+    //         id: projects.isEmpty ? 0 : projects.last.id + 1,
+    //         name: name,
+    //         createdAt: DateTime.now(),
+    //       ));
+    //     }));
 
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -58,7 +73,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
     );
   }
 
-  Future<void> deleteProjectDef(int projectId) async {
+  Future<void> deleteProjectDef(String projectId) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(

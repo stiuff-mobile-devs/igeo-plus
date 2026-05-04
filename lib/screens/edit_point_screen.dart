@@ -3,6 +3,7 @@ import 'package:igeo/utils/routes.dart';
 import '../models/point.dart';
 import '../models/project.dart';
 import '../utils/db_utils.dart';
+import '../utils/fb_utils.dart';
 
 class EditPointScreen extends StatefulWidget {
   const EditPointScreen({super.key});
@@ -56,12 +57,15 @@ class _EditPointScreenState extends State<EditPointScreen> {
         lat: double.tryParse(_latController.text),
         long: double.tryParse(_longController.text),
         description: _descriptionController.text,
+        isFavorite: _originalPoint.isFavorite,
+        image: _originalPoint.image,
       );
 
-      await DbUtils.updatePoint(updatedPoint);
+      //await DbUtils.updatePoint(updatedPoint);
+      await FirestoreUtils().updatePoint(updatedPoint);
       Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.HOME2,
-        (Route<dynamic> route) => false, // Remove todas as rotas anteriores
+        (Route<dynamic> route) => false,
       );
     }
   }
