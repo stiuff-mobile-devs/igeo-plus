@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:igeo/utils/auth_utils.dart';
 import 'package:sign_button/sign_button.dart';
@@ -43,16 +44,18 @@ class LoginScreen extends StatelessWidget {
                 }
               },
             ),
-            SignInButton(
-              buttonType: ButtonType.appleDark,
-              btnText: "Entrar com a Apple",
-              onPressed: () async {
-                bool success = await auth.signInWithApple();
-                if (success) {
-                  Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
-                }
-              },
-            ),
+            if (Platform.isIOS || kDebugMode) ...[
+              SignInButton(
+                buttonType: ButtonType.appleDark,
+                btnText: "Entrar com a Apple",
+                onPressed: () async {
+                  bool success = await auth.signInWithApple();
+                  if (success) {
+                    Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
+                  }
+                },
+              )
+            ]
           ],
         ),
       ),
