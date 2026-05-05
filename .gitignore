@@ -47,3 +47,4 @@ app.*.map.json
 /android/app/release
 ios/GoogleService-Info.plist
 ios/GoogleService-Info.plist
+ios/Runner/GoogleService-Info.plist
