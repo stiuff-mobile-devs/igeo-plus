@@ -34,7 +34,12 @@ class _LocationInputState extends State<LocationInput> {
       final position = await Geolocator.getCurrentPosition();
       _updatePosition(position.latitude, position.longitude);
     } catch (e) {
-      // _showLocationErrorDialog();
+      if (mounted) {
+        _showLocationErrorDialog(
+          'Location permissions are permanently denied. Please enable them in Settings > Igeo+ > Location to continue.',
+          canOpenSettings: true,
+        );
+      }
     }
   }
 
@@ -55,26 +60,35 @@ class _LocationInputState extends State<LocationInput> {
         _updatePosition(selectedPosition.latitude, selectedPosition.longitude);
       }
     } catch (e) {
-      // _showLocationErrorDialog();
+      if (mounted) {
+        _showLocationErrorDialog(
+          'Location permissions are permanently denied. Please enable them in Settings > Igeo+ > Location to continue.',
+          canOpenSettings: true,
+        );
+      }
     }
   }
 
-  void _showLocationErrorDialog() {
+  void _showLocationErrorDialog(String message,
+      {bool canOpenSettings = false}) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Location Error'),
-        content: const Text('Unable to get current location.'),
+        content: Text(message),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              _showManualInputDialog();
-            },
-            child: const Text('Enter manually'),
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('OK'),
           ),
+          if (canOpenSettings)
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                Geolocator.openAppSettings();
+              },
+              child: const Text('Open Settings'),
+            ),
         ],
       ),
     );

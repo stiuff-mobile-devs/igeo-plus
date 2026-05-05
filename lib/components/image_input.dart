@@ -50,7 +50,36 @@ class _ImageInputState extends State<ImageInput> {
   }
 
   void takePicture() async {
-    await _getCurrentUserLocation();
+    try {
+      await _getCurrentUserLocation();
+    } catch (e) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text("Location Permission Denied"),
+            content: const Text(
+              'Location permissions are permanently denied. Please enable them in Settings > Igeo+ > Location to continue.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text("OK"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  Geolocator.openAppSettings();
+                },
+                child: const Text("Open Settings"),
+              ),
+            ],
+          ),
+        );
+      }
+      return;
+    }
+
     if (storedImage.length >= 4) {
       showDialog(
         context: context,
