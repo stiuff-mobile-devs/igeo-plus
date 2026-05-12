@@ -267,9 +267,22 @@ class _PointsScreenState extends State<PointsScreen> {
           ),
           actions: [
             if (Platform.isIOS)
-              TextButton(
-                onPressed: () => Share.shareXFiles([XFile(filePath)]),
-                child: const Text("Share File"),
+              Builder(
+                builder: (buttonContext) {
+                  return TextButton(
+                    onPressed: () async {
+                      final box =
+                      buttonContext.findRenderObject() as RenderBox;
+
+                      await Share.shareXFiles(
+                        [XFile(filePath)],
+                        sharePositionOrigin:
+                        box.localToGlobal(Offset.zero) & box.size,
+                      );
+                    },
+                    child: const Text("Share File"),
+                  );
+                },
               ),
             TextButton(
               onPressed: () => Navigator.pop(context),

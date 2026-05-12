@@ -242,7 +242,7 @@ class FirestoreUtils {
 
   //////////////////////////////////////
 
-  Future<String?> downloadData() async {
+  Future<String?> downloadData(BuildContext context) async {
     List<Project> projects = await getAllProjects();
     List<Point> points = [];
 
@@ -283,7 +283,7 @@ class FirestoreUtils {
         ])
       ];
 
-      return await DbUtils.generateCsv(csvData);
+      return await DbUtils.generateCsv(csvData, context);
     } finally {
       //await db.close();
     }

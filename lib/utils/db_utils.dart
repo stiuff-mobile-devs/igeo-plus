@@ -114,7 +114,7 @@ class DbUtils {
     }
   }
 
-  static Future<String> generateCsv(List<List<dynamic>> inputData) async {
+  static Future<String> generateCsv(List<List<dynamic>> inputData, BuildContext context) async {
     final csvData = const ListToCsvConverter().convert(inputData);
 
     late final Directory dir;
@@ -171,13 +171,20 @@ class DbUtils {
 
     // iOS mantém o compartilhamento
     if (Platform.isIOS) {
-      await Share.shareXFiles([XFile(file.path)], text: 'iGeo Export');
+      final box = context.findRenderObject() as RenderBox;
+
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: 'iGeo Export',
+        sharePositionOrigin:
+        box.localToGlobal(Offset.zero) & box.size,
+      );
     }
 
     return file.path;
   }
 
-  static Future<String?> downloadData() async {
+  static Future<String?> downloadData(BuildContext context) async {
 
     final db = await database();
     try {
@@ -211,7 +218,7 @@ class DbUtils {
             ])
       ];
 
-      return await generateCsv(csvData);
+      return await generateCsv(csvData, context);
     } finally {
       await db.close();
     }

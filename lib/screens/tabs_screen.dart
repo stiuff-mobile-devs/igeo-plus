@@ -103,9 +103,22 @@ class _TabsScreenState extends State<TabsScreen> {
           ),
           actions: [
             if (Platform.isIOS)
-              TextButton(
-                onPressed: () => Share.shareXFiles([XFile(filePath)]),
-                child: const Text("Share File"),
+              Builder(
+                builder: (buttonContext) {
+                  return TextButton(
+                    onPressed: () async {
+                      final box =
+                      buttonContext.findRenderObject() as RenderBox;
+
+                      await Share.shareXFiles(
+                        [XFile(filePath)],
+                        sharePositionOrigin:
+                        box.localToGlobal(Offset.zero) & box.size,
+                      );
+                    },
+                    child: const Text("Share File"),
+                  );
+                },
               ),
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -148,7 +161,7 @@ class _TabsScreenState extends State<TabsScreen> {
             onPressed: () async {
               FirestoreUtils fs = FirestoreUtils();
               try {
-                final path = await fs.downloadData();
+                final path = await fs.downloadData(context);
                 if (path != null) {
                   showExportResult(context, path);
                 } else {
