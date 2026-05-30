@@ -45,6 +45,9 @@ class Point extends HiveObject with ChangeNotifier {
   @HiveField(11)
   bool isDirty;
 
+  @HiveField(12)
+  List<List<String>>? geomorphClassification;
+
   Point({
     this.id,
     this.name,
@@ -59,6 +62,7 @@ class Point extends HiveObject with ChangeNotifier {
     this.image,
     this.pickedImages = const [],
     this.isDirty = false,
+    this.geomorphClassification
   });
 
   void toggleFavorite() {
@@ -90,6 +94,11 @@ class Point extends HiveObject with ChangeNotifier {
       'description': description,
       'is_favorite': isFavorite,
       'images': image,
+      'geomorph_class': geomorphClassification?.map(
+            (path) => {
+          'path': path,
+        },
+      ).toList(),
     };
   }
 
@@ -122,6 +131,14 @@ class Point extends HiveObject with ChangeNotifier {
           ? List<String>.from(map['images'])
           : <String>[],
       isFavorite: map['is_favorite'] ?? false,
+      geomorphClassification:
+      map['geomorph_class'] != null
+          ? (map['geomorph_class'] as List)
+          .map<List<String>>(
+            (item) => List<String>.from(item['path']),
+      )
+          .toList()
+          : [],
       isDirty: false, 
     );
   }

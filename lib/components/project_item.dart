@@ -45,18 +45,18 @@ class ProjectItem extends StatelessWidget {
         final confirm = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Excluir projeto'),
-            content: const Text('Tem certeza que deseja excluir este projeto e todos os seus pontos?'),
+            title: const Text('Delete project'),
+            content: const Text('Are you sure you want to delete this project and all its points?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancelar'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () async {
                   Navigator.pop(context, true);
                 },
-                child: const Text('Excluir'),
+                child: const Text('Delete', style: TextStyle(color: Colors.red),),
               ),
             ],
           ),

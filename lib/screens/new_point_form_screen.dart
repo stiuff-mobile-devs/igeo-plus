@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:igeo/data/geomorph_catalog.dart';
 import '../components/image_input.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +8,8 @@ import '../models/point.dart';
 import '../models/project.dart';
 import '../components/location_input.dart';
 import 'package:hive/hive.dart';
+
+import 'classification_selection_screen.dart';
 
 class NewPointFormScreen extends StatefulWidget {
   @override
@@ -17,6 +20,8 @@ class _NewPointFormScreenState extends State<NewPointFormScreen> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String? selectedDiscipline;
+  List<List<String>> selectedClassifications = [];
   List<File> pickedImages = [];
 
   void addImage(File pickedImage) {
@@ -70,6 +75,7 @@ class _NewPointFormScreenState extends State<NewPointFormScreen> {
       user_id: 1,
       project_id: project.id,
       pickedImages: pickedImages,
+      geomorphClassification: selectedClassifications,
     );
 
     final pointsBox = Hive.box<Point>('points');
@@ -146,6 +152,103 @@ class _NewPointFormScreenState extends State<NewPointFormScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
+                    disciplineSelector(),
+                    const SizedBox(height: 20),
+                    if (selectedClassifications.isNotEmpty)
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                selectedClassifications.first.first,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF004D40),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              ...selectedClassifications.map(
+                                    (path) => ListTile(
+                                  dense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text(
+                                    path.skip(1).join(" > "),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: const Icon(Icons.remove_circle_outline),
+                                    color: Colors.red,
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedClassifications.remove(path);
+
+                                        if (selectedClassifications.isEmpty) {
+                                          selectedDiscipline = null;
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    // Column(
+                    //   children: selectedClassifications.map((path) {
+                    //     return Card(
+                    //       child: ListTile(
+                    //         title: Text(path.skip(1).join(" > ")),
+                    //         trailing: IconButton(
+                    //           icon: const Icon(Icons.remove_circle_outline),
+                    //           color: Colors.red,
+                    //           onPressed: () {
+                    //             setState(() {
+                    //               selectedClassifications.remove(path);
+                    //             });
+                    //           },
+                    //         ),
+                    //       ),
+                    //     );
+                    //   }).toList(),
+                    // ),
+                    if (selectedDiscipline != null) ... [
+                      ElevatedButton(
+                        onPressed: () async {
+                          final discipline =
+                          GeomorphologyCatalog.disciplines.firstWhere(
+                                (e) => e[0].title == selectedDiscipline,
+                          );
+
+                          final path =
+                          await Navigator.push<List<String>>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  ClassificationSelectorScreen(
+                                    node: discipline[0],
+                                    currentPath: [discipline[0].title],
+                                  ),
+                            ),
+                          );
+
+                          if (path != null) {
+                            setState(() {
+                              addOrReplaceClassification(path);
+                            });
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                        ),
+                        child: const Text(
+                          "Add geomorphological classification",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                     LocationInput(),
                     ImageInput(addImage),
                     const SizedBox(height: 10),
@@ -167,5 +270,75 @@ class _NewPointFormScreenState extends State<NewPointFormScreen> {
         ),
       ),
     );
+  }
+
+  Widget disciplineSelector() {
+    return DropdownButtonFormField<String>(
+      hint: const Text('Select a discipline'),
+      decoration: InputDecoration(
+        labelText: 'Discipline',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        filled: true,
+        fillColor: Colors.black12,
+      ),
+      value: selectedDiscipline,
+      items: GeomorphologyCatalog.disciplines
+          .map(
+            (d) => DropdownMenuItem(
+          value: d[0].title,
+          child: Text(d[0].title),
+        ),
+      )
+          .toList(),
+      onChanged: (value) async {
+        // if (value == null) return;
+        if (selectedDiscipline != null &&
+            selectedDiscipline != value) {
+          setState(() {
+            selectedClassifications.clear();
+          });
+        }
+
+        setState(() {
+          selectedDiscipline = value;
+        });
+
+        // final discipline =
+        // GeomorphologyCatalog.disciplines.firstWhere(
+        //       (d) => d[0].title == value,
+        // );
+        //
+        // final path = await Navigator.push<List<String>>(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (_) => ClassificationSelectorScreen(
+        //       node: discipline[0],
+        //       currentPath: [discipline[0].title],
+        //     ),
+        //   ),
+        // );
+        //
+        // if (path != null) {
+        //   setState(() {
+        //     addOrReplaceClassification(path);
+        //   });
+        // }
+      },
+    );
+  }
+
+  void addOrReplaceClassification(List<String> newPath) {
+    final discipline = newPath[0];
+    final classificationType = newPath[1];
+
+    selectedClassifications.removeWhere(
+          (path) =>
+      path[0] == discipline &&
+          path[1] == classificationType,
+    );
+
+    selectedClassifications.add(newPath);
   }
 }

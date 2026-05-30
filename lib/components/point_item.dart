@@ -56,16 +56,16 @@ class _PointItemState extends State<PointItem> {
           final confirm = await showDialog<bool>(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('Excluir ponto'),
-              content: const Text('Tem certeza que deseja excluir este ponto?'),
+              title: const Text('Delete point'),
+              content: const Text('Are you sure you want to delete this point?'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: const Text('Cancelar'),
+                  child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context, true),
-                  child: const Text('Excluir'),
+                  child: const Text('Delete', style: TextStyle(color: Colors.red),),
                 ),
               ],
             ),

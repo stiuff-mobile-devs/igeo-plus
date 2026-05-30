@@ -234,8 +234,81 @@ class PointDetailScreen extends StatelessWidget {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 10),
-                                  child: Text("${point.description}"),
+                                  child: Text(
+                                    point.description == null ||
+                                        point.description!.trim().isEmpty
+                                        ? "No description added"
+                                        : point.description!,
+                                    style: TextStyle(
+                                      color: point.description == null ||
+                                          point.description!.trim().isEmpty
+                                          ? Colors.grey
+                                          : null,
+                                    ),
+                                  ),
                                 ),
+                              ],
+                            ),
+                          ),
+                          const Divider(),
+
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.account_tree,
+                                      size: 14,
+                                      color: Colors.amber,
+                                    ),
+                                    Text(
+                                      " Geomorphological Classification",
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                if (point.geomorphClassification == null ||
+                                    point.geomorphClassification!.isEmpty)
+                                  const Center(
+                                    child:  const Text(
+                                      "No classification added",
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  )
+                                else ...[
+                                  Text(
+                                    point.geomorphClassification!.first.first,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF004D40),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 10),
+
+                                  ...point.geomorphClassification!.map(
+                                        (path) => Padding(
+                                      padding: const EdgeInsets.only(bottom: 6),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text("• "),
+                                          Expanded(
+                                            child: Text(
+                                              path.skip(1).join(" > "),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ],
                             ),
                           ),

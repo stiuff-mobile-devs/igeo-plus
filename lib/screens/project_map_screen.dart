@@ -37,16 +37,16 @@ class _ProjectMapScreenState extends State<ProjectMapScreen> {
     if (latLngPoints.isEmpty) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Mapa do Projeto", style: TextStyle(color: Colors.white)),
+          title: const Text("Project Map", style: TextStyle(color: Colors.white)),
           iconTheme: const IconThemeData(color: Colors.white),
         ),
-        body: Center(child: Text("Nenhum ponto disponível")),
+        body: Center(child: Text("No points added")),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Mapa do Projeto", style: TextStyle(color: Colors.white)),
+        title: const Text("Project Map", style: TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: FlutterMap(

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:igeo/utils/routes.dart';
+import '../data/geomorph_catalog.dart';
 import '../models/point.dart';
 import '../models/project.dart';
 import '../utils/db_utils.dart';
 import '../utils/fb_utils.dart';
+import 'classification_selection_screen.dart';
 
 class EditPointScreen extends StatefulWidget {
   const EditPointScreen({super.key});
@@ -18,6 +20,8 @@ class _EditPointScreenState extends State<EditPointScreen> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _latController;
   late final TextEditingController _longController;
+  List<List<String>> selectedClassifications = [];
+  String? selectedDiscipline;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -43,6 +47,15 @@ class _EditPointScreenState extends State<EditPointScreen> {
       _descriptionController.text = _originalPoint.description ?? '';
       _latController.text = _originalPoint.lat?.toStringAsFixed(6) ?? '';
       _longController.text = _originalPoint.long?.toStringAsFixed(6) ?? '';
+
+      selectedClassifications =
+      List<List<String>>.from(
+        _originalPoint.geomorphClassification ?? [],
+      );
+
+      if (selectedClassifications.isNotEmpty) {
+        selectedDiscipline = selectedClassifications.first.first;
+      }
     }
   }
 
@@ -59,6 +72,7 @@ class _EditPointScreenState extends State<EditPointScreen> {
         description: _descriptionController.text,
         isFavorite: _originalPoint.isFavorite,
         image: _originalPoint.image,
+        geomorphClassification: selectedClassifications
       );
 
       //await DbUtils.updatePoint(updatedPoint);
@@ -163,7 +177,122 @@ class _EditPointScreenState extends State<EditPointScreen> {
                 ),
                 maxLines: 5,
               ),
-              SizedBox(
+              const SizedBox(height: 20),
+
+              DropdownButtonFormField<String>(
+                value: selectedDiscipline,
+                hint: const Text('Select a discipline'),
+                decoration: InputDecoration(
+                  labelText: 'Discipline',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.black12,
+                ),
+                items: GeomorphologyCatalog.disciplines
+                    .map(
+                      (d) => DropdownMenuItem(
+                    value: d[0].title,
+                    child: Text(d[0].title),
+                  ),
+                )
+                    .toList(),
+                onChanged: (value) async {
+                  if (value == null) return;
+
+                  if (selectedDiscipline != null &&
+                      selectedDiscipline != value) {
+                    setState(() {
+                      selectedClassifications.clear();
+                    });
+                  }
+
+                  setState(() {
+                    selectedDiscipline = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 15),
+
+              if (selectedDiscipline != null) ... [
+                ElevatedButton(
+                  onPressed: () async {
+                    final discipline =
+                    GeomorphologyCatalog.disciplines.firstWhere(
+                          (e) => e[0].title == selectedDiscipline,
+                    );
+
+                    final path =
+                    await Navigator.push<List<String>>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            ClassificationSelectorScreen(
+                              node: discipline[0],
+                              currentPath: [discipline[0].title],
+                            ),
+                      ),
+                    );
+
+                    if (path != null) {
+                      setState(() {
+                        addOrReplaceClassification(path);
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
+                  child: const Text(
+                    "Add geomorphological classification",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+              if (selectedClassifications.isNotEmpty)
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          selectedClassifications.first.first,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF004D40),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        ...selectedClassifications.map(
+                              (path) => ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              path.skip(1).join(" > "),
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.remove_circle_outline),
+                              color: Colors.red,
+                              onPressed: () {
+                                setState(() {
+                                  selectedClassifications.remove(path);
+
+                                  if (selectedClassifications.isEmpty) {
+                                    selectedDiscipline = null;
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              const SizedBox(
                 height: 15,
               ),
               ElevatedButton(
@@ -189,5 +318,26 @@ class _EditPointScreenState extends State<EditPointScreen> {
         ),
       ),
     );
+  }
+
+  void addOrReplaceClassification(List<String> newPath) {
+    if (newPath.length < 2) return;
+
+    final discipline = newPath[0];
+    final type = newPath[1];
+
+    if (selectedClassifications.isNotEmpty &&
+        selectedClassifications.first[0] != discipline) {
+      selectedClassifications.clear();
+    }
+
+    selectedClassifications.removeWhere(
+          (path) =>
+      path.length >= 2 &&
+          path[0] == discipline &&
+          path[1] == type,
+    );
+
+    selectedClassifications.add(newPath);
   }
 }

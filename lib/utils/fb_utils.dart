@@ -32,6 +32,8 @@ class FirestoreUtils {
 
   Future<void> createPoint(Point pointData) async {
     _pointsBox.put(pointData.id, pointData);
+    debugPrint("AAAAAAAAAAAAAAAAAAAAAAAA ${pointData.geomorphClassification?.length
+    }");
 
     try {
       await _firestore

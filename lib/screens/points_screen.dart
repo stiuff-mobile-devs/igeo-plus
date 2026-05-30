@@ -90,6 +90,7 @@ class _PointsScreenState extends State<PointsScreen> {
     String time,
     String description,
     List<File> photos,
+    List<List<String>> geomorph_class,
   ) async {
     final Point pointData = Point (
       id: uuid.v1(),
@@ -102,7 +103,8 @@ class _PointsScreenState extends State<PointsScreen> {
       description: description,
       isFavorite: false,
       isDirty: true,
-      image: []
+      image: [],
+      geomorphClassification: geomorph_class
     );
 
     List<String>? encodedImages = [];
@@ -231,6 +233,7 @@ class _PointsScreenState extends State<PointsScreen> {
           result.time!,
           result.description!,
           result.pickedImages!,
+          result.geomorphClassification!
         );
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('New point added')),
@@ -436,28 +439,31 @@ class _PointsScreenState extends State<PointsScreen> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: const Text('Editar nome do projeto'),
+              title: const Text('Edit project name'),
               content: TextField(
                 controller: controller,
                 autofocus: true,
                 decoration: const InputDecoration(
-                  labelText: 'Nome do projeto',
+                  labelText: 'Name',
                   border: OutlineInputBorder(),
                 ),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancelar'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
                   onPressed: () async {
                     final newName = controller.text.trim();
                     if (newName.isEmpty) return;
                     await firestore.editProject(widget.project.id, newName);
                     Navigator.pushReplacementNamed(context, AppRoutes.HOME2);
                   },
-                  child: const Text('Salvar'),
+                  child: const Text('Save', style: TextStyle(color: Colors.white)),
                 ),
               ],
             );

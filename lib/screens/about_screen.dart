@@ -11,7 +11,7 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sobre o iGeo', style: TextStyle(color: Colors.white)),
+        title: const Text('About iGeo', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF004D40),
         centerTitle: true,
         iconTheme: const IconThemeData(
@@ -42,7 +42,8 @@ class AboutScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             const Text(
-              'Aplicativo de georreferenciamento para visualização e organização de pontos e projetos geográficos.',
+              //'Aplicativo de georreferenciamento para visualização e organização de pontos e projetos geográficos.'
+              'Georeferencing application for visualizing and managing geographic points and projects.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
