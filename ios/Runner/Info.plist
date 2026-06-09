@@ -31,6 +31,8 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+		  <key>ITSAppUsesNonExemptEncryption</key>
+      <false/>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
