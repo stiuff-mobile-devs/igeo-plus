@@ -1,6 +1,7 @@
 class GeomorphClassification {
   String? id;
   String title;
+  String? desc;
   bool isRoot;
   bool isPrimary;
   bool isSelected;
@@ -9,6 +10,7 @@ class GeomorphClassification {
   GeomorphClassification({
     this.id,
     required this.title,
+    this.desc,
     this.isRoot = false,
     this.isPrimary = false,
     this.isSelected = false,

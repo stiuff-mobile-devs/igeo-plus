@@ -1,0 +1,21 @@
+{
+"type": "FeatureCollection",
+"name": "Pontos_Campo_GeoCosteira26",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Name": "Transecto Massambaba início", "Dia": 1, "id": 1, "Município": "Arraial do Cabo" }, "geometry": { "type": "Point", "coordinates": [ -42.236536858122079, -22.930842462821619, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Transecto Massambaba - Fim", "Dia": 1, "id": 2, "Município": "Arraial do Cabo" }, "geometry": { "type": "Point", "coordinates": [ -42.238777147543331, -22.940246952926401, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Parabólica hairpin Massambaba", "Dia": 1, "id": 3, "Município": "Arraial do Cabo" }, "geometry": { "type": "Point", "coordinates": [ -42.253592053504669, -22.93133359192953, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Arenitos de restinga Massambaba", "Dia": 1, "id": 4, "Município": "Arraial do Cabo" }, "geometry": { "type": "Point", "coordinates": [ -42.246262135018583, -22.927949022522458, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Dunas frontais Peró", "Dia": 2, "id": 5, "Município": "Cabo Frio" }, "geometry": { "type": "Point", "coordinates": [ -41.973982549200628, -22.826228117274791, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Cortes eólicos Peró", "Dia": 2, "id": 6, "Município": "Cabo Frio" }, "geometry": { "type": "Point", "coordinates": [ -41.978866772139959, -22.833315629258511, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Parabólicas complexas Peró", "Dia": 2, "id": 7, "Município": "Cabo Frio" }, "geometry": { "type": "Point", "coordinates": [ -41.98393755828274, -22.83994285171234, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Dunas escalonares Peró", "Dia": 2, "id": 8, "Município": "Cabo Frio" }, "geometry": { "type": "Point", "coordinates": [ -41.994526129055401, -22.85146413798585, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Dunas móveis Peró", "Dia": 2, "id": 9, "Município": "Cabo Frio" }, "geometry": { "type": "Point", "coordinates": [ -41.996353735202341, -22.848882728246029, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Ponta do Pai Vitório", "Dia": 3, "id": 10, "Município": "Armação dos Búzios" }, "geometry": { "type": "Point", "coordinates": [ -41.972164946962558, -22.729246708549439, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Foz do rio Una", "Dia": 3, "id": 11, "Município": "Cabo Frio" }, "geometry": { "type": "Point", "coordinates": [ -41.987875018167728, -22.713294961966419, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Contato Quaternário - Pré Cambriano", "Dia": 3, "id": 12, "Município": "Cabo Frio" }, "geometry": { "type": "Point", "coordinates": [ -42.058313779426847, -22.673311664438131, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Foz do rio São João", "Dia": 3, "id": 13, "Município": "Casmiro de Abreu" }, "geometry": { "type": "Point", "coordinates": [ -41.990109172280299, -22.59781934793568, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "Praia da Tartaruga", "Dia": 3, "id": 14, "Município": "Rio das Ostras" }, "geometry": { "type": "Point", "coordinates": [ -41.97076356787943, -22.544996887881531, 0.0 ] } }
+]
+}
